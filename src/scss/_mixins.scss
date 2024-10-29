@@ -1,0 +1,46 @@
+/* TOOLS - MIXINS */
+
+// MEDIA QUERYS
+@mixin xs_mini() {
+  @media (min-width: $screen-xs-mini) {
+    @content;
+  }
+}
+
+@mixin xs_plus() {
+  @media (min-width: $screen-xs-plus) {
+    @content;
+  }
+}
+
+@mixin sm() {
+  @media (min-width: $screen-sm) {
+    @content;
+  }
+}
+
+@mixin md() {
+  @media (min-width: $screen-md) {
+    @content;
+  }
+}
+
+@mixin lg() {
+  @media (min-width: $screen-lg) {
+    @content;
+  }
+}
+
+@mixin xl() {
+  @media (min-width: $screen-xl) {
+    @content;
+  }
+}
+
+@mixin xxl() {
+  @media (min-width: $screen-xxl) {
+    @content;
+  }
+}
+
+/* END TOOLS - MIXINS */

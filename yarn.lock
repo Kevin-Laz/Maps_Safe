@@ -157,6 +157,15 @@
     vite "5.4.6"
     watchpack "2.4.1"
 
+"@angular/cdk@^18.2.10":
+  version "18.2.10"
+  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-18.2.10.tgz#903a468a96ae13160a1db8c7980e1cefce33a896"
+  integrity sha512-Weh0slrfWNp5N6UO4m3tXzs2QBFexNsnJf1dq0oaLDBgfkuqUmxdCkurSv5+lWZRkTPLYmd/hQeJpvrhxMCleg==
+  dependencies:
+    tslib "^2.3.0"
+  optionalDependencies:
+    parse5 "^7.1.2"
+
 "@angular/cli@^18.2.1":
   version "18.2.10"
   resolved "https://registry.yarnpkg.com/@angular/cli/-/cli-18.2.10.tgz#29ab1344bb496122b2689ebbb862f2b44fb31848"
@@ -219,6 +228,13 @@
   version "18.2.9"
   resolved "https://registry.yarnpkg.com/@angular/forms/-/forms-18.2.9.tgz#38c45347938a7458fc42b74fdea01379a7d9b386"
   integrity sha512-yyN5dG60CXH6MRte8rv4aGUTeNOMz/pUV7rVxittpjN7tPHfGEL9Xz89Or90Aa1QiHuBmHFk+9A39s03aO1rDQ==
+  dependencies:
+    tslib "^2.3.0"
+
+"@angular/material@^18.2.10":
+  version "18.2.10"
+  resolved "https://registry.yarnpkg.com/@angular/material/-/material-18.2.10.tgz#05b607ec76afebd3178c0e08b680cb822c41dbc6"
+  integrity sha512-XZISsICpTOzq2qR9yUaWrAz9WZCAh/B457gq/ftkkiiafLwFCvbKur19FFUJO5GX+uVdo074133L85xreOkFFw==
   dependencies:
     tslib "^2.3.0"
 
@@ -5365,6 +5381,13 @@ parse5@^7.0.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/parse5/-/parse5-7.2.0.tgz#8a0591ce9b7c5e2027173ab737d4d3fc3d826fab"
   integrity sha512-ZkDsAOcxsUMZ4Lz5fVciOehNcJ+Gb8gTzcA4yl3wnc273BAybYWrQ+Ks/OjCjSEpjvQkDSeZbybK9qj2VHHdGA==
+  dependencies:
+    entities "^4.5.0"
+
+parse5@^7.1.2:
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/parse5/-/parse5-7.2.1.tgz#8928f55915e6125f430cc44309765bf17556a33a"
+  integrity sha512-BuBYQYlv1ckiPdQi/ohiivi9Sagc9JG+Ozs0r7b/0iK3sKmrb0b9FdWdBbOdx6hBCM/F9Ir82ofnBhtZOjCRPQ==
   dependencies:
     entities "^4.5.0"
 

@@ -1,0 +1,13 @@
+<div class="c-header__toolbar">
+  <div class="c-header__nav">
+    <button id="change-sidebar-button" class="c-header__toggle" (click)="changeSidebarStatus()">
+      <span translate = "no" class="material-icons material-symbols-rounded c-header__icon">menu</span>
+    </button>
+    <!--<img id="logo" class="img-fluid" height="160px" width="127px" [src]="SOURCE_LOGO" alt="IDENTICARD" />-->
+    <span id="name-school" class="c-header__nav__text__main">{{NAME_SCHOOL}}</span>
+  </div>
+  <div class="c-header__section">
+    <button id="header-login-button" (click)="changeModalLoginSatus()">Login</button>
+  </div>
+  <app-modal-login id="c-login-modal" [toggleModal]="modalLoginStatus" (toggleUpdate)="changeModalLoginSatus()"></app-modal-login>
+</div>

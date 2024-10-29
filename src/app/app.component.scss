@@ -1,0 +1,27 @@
+@import 'settings';
+@import 'mixins';
+@import './shared/components/header/header.component.scss';
+@import './shared/components/side-bar/side-bar.component.scss';
+.app-container {
+  display: contents;
+  overflow-x: hidden;
+}
+@include md() {
+  .app-container {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 150px 1fr; /* Sidebar + contenido */
+    &.sidebar-collapsed {
+      grid-template-columns: 50px 1fr !important;
+    }
+  }
+}
+
+.c-main{
+  grid-column: 2 / 3;
+  grid-row: 2/ 3;
+}
+
+button, a {
+  -webkit-tap-highlight-color: transparent;
+}

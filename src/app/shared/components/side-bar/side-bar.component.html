@@ -1,0 +1,15 @@
+<nav [ngClass]="{'sidebar-collapsed': !sidebarStatus()}" class="mobile-sidebar">
+  <ul class="icon-list">
+    <li *ngFor="let lis of listSections; let i = index">
+      <a [routerLink]="lis.link" (click)="changeSidebar()">
+        <i translate="no" class="material-icons material-symbols-rounded" [ngClass]="{
+          'colorize_blue' : i==0,
+          'colorize_red' : i==1,
+          'colorize_yellow' : i ==2,
+          'colorize_green' : i ==3
+        }">{{lis.icon}}</i>
+        <span class="icon-name">{{lis.name}}</span>
+      </a>
+    </li>
+  </ul>
+</nav>

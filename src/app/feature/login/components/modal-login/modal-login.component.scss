@@ -1,0 +1,105 @@
+@import 'settings';
+@import 'mixins';
+
+.login-modal {
+  background-color: #fff; /* Fondo blanco */
+  padding: 20px;
+  width: 200px;
+  border-radius: 8px; /* Bordes redondeados */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  position: absolute; /* Aseguramos que pueda flotar */
+  z-index: 1000; /* Sobre otros elementos */
+  right: 20px;
+  bottom: -300px;
+
+  @include md(){
+    right: 20px;
+    bottom: -250px;
+    width: 300px;
+  }
+  h2 {
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: #333;
+    text-align: center;
+    font-weight: 400;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+
+    label {
+      display: block;
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 5px;
+      font-weight: 300;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #F7E523;
+      border-radius: 5px;
+      font-size: 14px;
+      box-sizing: border-box;
+
+      &:focus {
+        outline: none;
+        border-color: #429c21; /* Color de borde al hacer foco */
+        box-shadow: 0 0 5px rgba(218, 230, 145, 0.5); /* Sombra en el focus */
+      }
+      &::placeholder{
+        color: #d6bdd3;
+      }
+    }
+  }
+
+  #login-button {
+    display: block;
+    width: 100%;
+    height: 40px;
+    text-align: center;
+    background-color: #429c21; /* Color del botón */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+    padding: 0 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #2980b9; /* Color al pasar el ratón */
+    }
+  }
+}
+
+.colorize {
+  color: #000000 !important;
+
+  &_blue {
+    color: #234FA2 !important;
+  }
+
+  &_red {
+    color: #D61A1A !important;
+  }
+
+  &_yellow {
+    color: #F7E523 !important;
+  }
+
+  &_green {
+    color: #429c21 !important;
+  }
+}
+
+.button-close{
+  height: 30px !important;
+  width: 30px !important;
+  position: absolute !important;
+  right: 5px;
+  top: 5px;
+}
