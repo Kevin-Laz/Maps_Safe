@@ -28,6 +28,6 @@ export class SideBarComponent {
     }
   ];
   changeSidebar(){
-    //this.toggle.emit(!this.sidebarStatus);
+    this.toggle.emit(!this.sidebarStatus);
   }
 }

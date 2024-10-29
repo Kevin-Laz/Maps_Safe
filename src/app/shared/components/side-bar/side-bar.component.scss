@@ -21,9 +21,12 @@
 
     &.sidebar-collapsed {
       width: 50px !important;
-      span{
+      .icon-name{
         display: none;
       }
+    }
+    .no-mobile{
+      display: block;
     }
     .icon-list {
       flex-direction: column;
@@ -119,3 +122,9 @@
   }
 }
 
+button {
+  all: unset;
+}
+.no-mobile{
+  display: none;
+}

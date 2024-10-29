@@ -1,5 +1,10 @@
 <nav [ngClass]="{'sidebar-collapsed': !sidebarStatus()}" class="mobile-sidebar">
   <ul class="icon-list">
+    <li class="no-mobile">
+      <button id="change-sidebar-button" class="" (click)="changeSidebar()">
+        <span translate = "no" class="material-icons material-symbols-rounded">menu</span>
+      </button>
+    </li>
     <li *ngFor="let lis of listSections; let i = index">
       <a [routerLink]="lis.link" (click)="changeSidebar()">
         <i translate="no" class="material-icons material-symbols-rounded" [ngClass]="{
