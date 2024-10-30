@@ -11,9 +11,12 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [RouterOutlet, MatIconModule, MatButtonModule, SideBarComponent, HeaderComponent, CommonModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
   title = 'maps_safe';
   sidebarState = signal<boolean>(true);
+  onToggleSidebar(newState: boolean) {
+    this.sidebarState.set(newState);
+  }
 }

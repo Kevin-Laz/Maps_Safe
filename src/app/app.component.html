@@ -2,6 +2,6 @@
   <app-side-bar
     class="c-sidebar"
     [sidebarStatus]="sidebarState()"
-    (toggle)="sidebarState.set($event)"></app-side-bar>
+    (toggle)="onToggleSidebar($event)"></app-side-bar>
   <main class="c-main"><router-outlet></router-outlet></main>
 </div>

@@ -5,16 +5,19 @@
         <span translate = "no" class="material-icons material-symbols-rounded">menu</span>
       </button>
     </li>
-    <li *ngFor="let lis of listSections; let i = index">
-      <a [routerLink]="lis.link" (click)="changeSidebar()">
-        <i translate="no" class="material-icons material-symbols-rounded" [ngClass]="{
-          'colorize_blue' : i==0,
-          'colorize_red' : i==1,
-          'colorize_yellow' : i ==2,
-          'colorize_green' : i ==3
-        }">{{lis.icon}}</i>
-        <span class="icon-name">{{lis.name}}</span>
-      </a>
+    <div class="div-list">
+      <li *ngFor="let lis of listSections; let i = index">
+        <a [routerLink]="lis.link">
+          <i translate="no" class="material-icons material-symbols-rounded">{{lis.icon}}</i>
+          <span class="icon-name">{{lis.name}}</span>
+        </a>
+      </li>
+    </div>
+    <li class="no-mobile">
+      <button id="sidebar-login-button" (click)="changeModalLoginSatus()">
+        <span translate = "no" class="material-icons material-symbols-rounded">account_circle</span>
+      </button>
     </li>
   </ul>
+  <app-modal-login id="c-login-modal" [toggleModal]="modalLoginStatus" (toggleUpdate)="changeModalLoginSatus()"></app-modal-login>
 </nav>
