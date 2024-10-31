@@ -1,0 +1,7 @@
+<div class="app-container" [ngClass]="{'sidebar-collapsed': !sidebarState()}">
+  <app-side-bar
+    class="c-sidebar"
+    [sidebarStatus]="sidebarState()"
+    (toggle)="onToggleSidebar($event)"></app-side-bar>
+  <main class="c-main"><router-outlet></router-outlet></main>
+</div>
