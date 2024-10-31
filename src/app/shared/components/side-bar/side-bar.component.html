@@ -1,0 +1,23 @@
+<nav [ngClass]="{'sidebar-collapsed': !sidebarStatus()}" class="mobile-sidebar">
+  <ul class="icon-list">
+    <li class="no-mobile">
+      <button id="change-sidebar-button" class="" (click)="changeSidebar()">
+        <span translate = "no" class="material-icons material-symbols-rounded">menu</span>
+      </button>
+    </li>
+    <div class="div-list">
+      <li *ngFor="let lis of listSections; let i = index">
+        <a [routerLink]="lis.link">
+          <i translate="no" class="material-icons material-symbols-rounded">{{lis.icon}}</i>
+          <span class="icon-name">{{lis.name}}</span>
+        </a>
+      </li>
+    </div>
+    <li class="no-mobile">
+      <button id="sidebar-login-button" (click)="changeModalLoginSatus()">
+        <span translate = "no" class="material-icons material-symbols-rounded">account_circle</span>
+      </button>
+    </li>
+  </ul>
+  <app-modal-login id="c-login-modal" [toggleModal]="modalLoginStatus" (toggleUpdate)="changeModalLoginSatus()"></app-modal-login>
+</nav>

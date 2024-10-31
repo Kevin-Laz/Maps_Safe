@@ -1,0 +1,17 @@
+<div id="login-modal" *ngIf="toggleModal" class="login-modal">
+  <h2 class="colorize_blue">Iniciar Sesión</h2>
+  <form id="form-login" #loginForm = "ngForm" (ngSubmit)="onLogin(loginForm)" novalidate>
+    <div class="form-group">
+      <label for="input-user" class="colorize_red">Usuario <span id="error-username" class="colorize" *ngIf="username.invalid && OnSubmitted">(Campo requerido)</span></label>
+      <input id="input-user" name="username" [(ngModel)]="textUser" type="text" placeholder="Introduce tu usuario" required #username = "ngModel">
+    </div>
+    <div class="form-group">
+      <label for="input-password" class="colorize_red">Contraseña <span id="error-password" class="colorize" *ngIf="password.invalid && OnSubmitted">(Campo requerido)</span></label>
+      <input id="input-password" name="password" [(ngModel)]="textPassword" type="password" placeholder="Introduce tu contraseña" required #password = "ngModel">
+    </div>
+    <button id="login-button" type="submit">Ingresar</button>
+  </form>
+  <button id="exit-button" mat-fab class="button-close" (click)="changeToggleModel()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
