@@ -1,0 +1,9 @@
+@import 'mixins';
+.c-home{
+  position: relative;
+  height: calc(100vh - 80px);
+  width: 100%;
+  @include md(){
+    height: 100%;
+  }
+}
