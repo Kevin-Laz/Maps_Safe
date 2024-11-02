@@ -43,6 +43,7 @@ Thumbs.db
 
 # Ignorar archivos de entorno sensibles
 /src/environments/environment.prod.ts
+/src/environments/environment.ts
 
 # Ignorar claves o configuraciones privadas
 /src/environments/*.private.ts
