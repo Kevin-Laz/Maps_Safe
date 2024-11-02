@@ -2,7 +2,7 @@
   "build": {
     "env": {
       "MAPS_API_KEY": "@MAPS_API_KEY"
-    },
-    "command": "./set-env.sh && yarn build"
-  }
+    }
+  },
+  "buildCommand": "./set-env.sh && yarn build"
 }
