@@ -1,4 +1,5 @@
 export const environment = {
-  production: false,
+  production: true,
+  //Colocar la API de Maps
   googleMapsApiKey: ''
 };
