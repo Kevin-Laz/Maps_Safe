@@ -6,7 +6,7 @@ const targetPath = './src/environments/environment.prod.ts';
 const envConfigFile = `
   export const environment = {
     production: true,
-    apiKey: '${MAPS_API_KEY}'
+    googleMapsApiKey: '${MAPS_API_KEY}'
   };
 `;
 
