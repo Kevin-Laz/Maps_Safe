@@ -10,4 +10,11 @@ const envConfigFile = `
   };
 `;
 
-writeFileSync(targetPath, envConfigFile);
+writeFileSync(targetPath, envConfigFile, (err) => {
+  if (err) {
+    console.error('Error al generar environment.prod.ts', err);
+  } else {
+    console.log('environment.prod.ts generado correctamente');
+  }
+});
+console.log('Contenido de environment.prod.ts:', envConfigFile);
