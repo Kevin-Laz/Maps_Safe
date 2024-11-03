@@ -19,9 +19,7 @@ export class MapsComponent implements AfterViewInit {
   async ngAfterViewInit(): Promise<void> {
     try{
       await this.googleMapsService.loadApi();
-      console.log('Espera carga del api');
       await this.initMap();
-      console.log('Se inicio el mapa');
     }
     catch (error){
       console.log('Error al cargar el API de Maps ', error);
