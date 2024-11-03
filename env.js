@@ -17,4 +17,3 @@ writeFileSync(targetPath, envConfigFile, (err) => {
     console.log('environment.prod.ts generado correctamente');
   }
 });
-console.log('Contenido de environment.prod.ts:', envConfigFile);
