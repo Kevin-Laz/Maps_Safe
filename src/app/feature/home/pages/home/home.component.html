@@ -1,3 +1,18 @@
 <div class="c-home">
-  <app-maps></app-maps>
+  <div class="content-busqueda">
+    <form class="form-busqueda" (ngSubmit)="searchRoute()">
+      <div class="input-group">
+        <label for="origin">Origen</label>
+        <input type="text" id="origin" [(ngModel)]="origin" name="origin" required />
+      </div>
+      <div class="input-group">
+        <label for="destination">Destino</label>
+        <input type="text" id="destination" [(ngModel)]="destination" name="destination" required />
+      </div>
+      <button type="submit">Buscar Ruta</button>
+    </form>
+  </div>
+  <div class="map-container">
+    <app-maps></app-maps>
+  </div>
 </div>

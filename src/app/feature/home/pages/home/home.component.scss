@@ -3,7 +3,68 @@
   position: relative;
   height: calc(100vh - 80px);
   width: 100%;
-  @include md(){
+  .map-container {
+    flex-grow: 1;
     height: 100%;
   }
+  .content-busqueda{
+    display: none;
+  }
+  @include md(){
+    height: 100%;
+    display: flex;
+    .content-busqueda{
+      display: block;
+      width: 300px;
+      background-color: $baseT;
+      z-index: 100;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .form-busqueda{
+      padding: 20px;
+      box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+    }
+  }
+  
 }
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: $base2;
+  font-size: 14px;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  background-color: transparent;
+  border-radius: 8px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #c2cbe5;
+  &:focus{
+    border: 1px solid #3798c2 !important;
+    outline: none;
+
+  }
+}
+
+button {
+  padding: 10px 15px;
+  background-color: $base2;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+button:hover {
+  background-color: $border-color;
+}
+
