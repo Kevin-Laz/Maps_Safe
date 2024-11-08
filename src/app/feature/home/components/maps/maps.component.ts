@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { GoogleMapsService } from '../../../../shared/services/google-maps/google-maps.service';
 
 @Component({
@@ -9,12 +9,22 @@ import { GoogleMapsService } from '../../../../shared/services/google-maps/googl
   styleUrl: './maps.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MapsComponent implements AfterViewInit {
+export class MapsComponent implements AfterViewInit, OnChanges {
   @Input() center: google.maps.LatLngLiteral = { lat: -12.0464, lng: -77.0428 };
+  test: google.maps.LatLngLiteral = {lat: -12.0466, lng: -77.0499}
+  @Input() originCoordinates: google.maps.LatLngLiteral | null = null;
+  @Input() destinationCoordinates: google.maps.LatLngLiteral | null = null;
   @ViewChild('map', { static: false }) mapContainer!: ElementRef;
   private map!: google.maps.Map;
+  private originMarker!: any;
+  private destinationMarker!: any;
 
   constructor(private googleMapsService: GoogleMapsService){}
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['originCoordinates'] || changes['destinationCoordinates']) {
+      this.updateMarkers();
+    }
+  }
 
   async ngAfterViewInit(): Promise<void> {
     try{
@@ -44,17 +54,45 @@ export class MapsComponent implements AfterViewInit {
       streetViewControl: false,
       fullscreenControl: true
     });
+  }
+  private updateMarkers(): void {
+    if (!this.map) return;
 
-    const customMarkerImg = document.createElement('img');
-    customMarkerImg.src = 'marcador.png';
-    customMarkerImg.style.width = '50px';
-    customMarkerImg.style.height = '50px';
-    new AdvancedMarkerElement({
-      position: this.center,
-      map: this.map,
-      title: 'Ubicación',
-      content: customMarkerImg,
-    });
+    // Eliminar marcadores previos si existen
+    if (this.originMarker) this.originMarker.map = null;
+    if (this.destinationMarker) this.destinationMarker.map = null;
+
+    // Crear nuevo marcador para el origen si hay coordenadas
+    if (this.originCoordinates) {
+      const customMarkerImg = document.createElement('img');
+      customMarkerImg.src = 'marcador.png';
+      customMarkerImg.style.width = '50px';
+      customMarkerImg.style.height = '50px';
+
+      this.originMarker = new google.maps.marker.AdvancedMarkerElement({
+        position: this.originCoordinates,
+        map: this.map,
+        title: 'Origen',
+        content: customMarkerImg,
+      });
+      this.map.setCenter(this.originCoordinates); // Centrar el mapa en el origen
+    }
+
+    // Crear nuevo marcador para el destino si hay coordenadas
+    if (this.destinationCoordinates) {
+      const customMarkerImg = document.createElement('img');
+      customMarkerImg.src = 'marcador.png';
+      customMarkerImg.style.width = '50px';
+      customMarkerImg.style.height = '50px';
+
+      this.destinationMarker = new google.maps.marker.AdvancedMarkerElement({
+        position: this.destinationCoordinates,
+        map: this.map,
+        title: 'Destino',
+        content: customMarkerImg,
+      });
+    }
   }
 }
+
 
