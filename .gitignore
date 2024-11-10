@@ -41,8 +41,6 @@ testem.log
 .DS_Store
 Thumbs.db
 
-# Ignorar archivos de entorno sensibles
+#environments
 /src/environments/environment.prod.ts
-
-# Ignorar claves o configuraciones privadas
-/src/environments/*.private.ts
+/src/environments/environment.ts
