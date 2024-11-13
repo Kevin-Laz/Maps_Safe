@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
 import { GoogleMapsService } from '../../../../shared/services/google-maps/google-maps.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { GoogleMapsService } from '../../../../shared/services/google-maps/googl
   styleUrl: './maps.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MapsComponent implements AfterViewInit {
+export class MapsComponent implements AfterViewInit, OnDestroy {
   @Input() center: google.maps.LatLngLiteral = { lat: -12.0464, lng: -77.0428 };
   @ViewChild('map', { static: false }) mapContainer!: ElementRef;
   private map!: google.maps.Map;
@@ -55,6 +55,14 @@ export class MapsComponent implements AfterViewInit {
       title: 'Ubicación',
       content: customMarkerImg,
     });
+  }
+
+  ngOnDestroy(): void {
+    // Limpia el mapa y elimina eventos para evitar problemas en cambios de ruta
+    if (this.map) {
+      google.maps.event.clearInstanceListeners(this.map);
+      this.map = undefined!;
+    }
   }
 }
 
