@@ -8,8 +8,9 @@ export class GoogleMapsService {
   private apiLoaded: Promise<void> | null = null;
 
   loadApi(): Promise<void> {
-    if (this.apiLoaded) {
-      return this.apiLoaded;
+    // Verifica si ya existe el script en el DOM
+    if (this.apiLoaded || document.getElementById('google-maps-script')) {
+      return this.apiLoaded || Promise.resolve();
     }
 
     this.apiLoaded = new Promise((resolve, reject) => {
@@ -19,6 +20,7 @@ export class GoogleMapsService {
       };
 
       const script = document.createElement('script');
+      script.id = 'google-maps-script';
       script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}&callback=initMapCallback&v=weekly&libraries=marker&loading=async`;
       script.async = true;
       script.defer = true;
