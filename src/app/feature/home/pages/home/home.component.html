@@ -3,11 +3,11 @@
     <form class="form-busqueda" (ngSubmit)="searchRoute()">
       <div class="input-group">
         <label for="origin">Origen</label>
-        <input type="text" id="origin" [(ngModel)]="origin" name="origin" required />
+        <input type="text" id="origin" #originInput [(ngModel)]="origin" name="origin" required />
       </div>
       <div class="input-group">
         <label for="destination">Destino</label>
-        <input type="text" id="destination" [(ngModel)]="destination" name="destination" required />
+        <input type="text" id="destination" #destinationInput [(ngModel)]="destination" name="destination" required />
       </div>
       <button type="submit">Buscar Ruta</button>
     </form>

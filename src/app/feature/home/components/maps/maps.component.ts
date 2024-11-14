@@ -18,11 +18,14 @@ export class MapsComponent implements AfterViewInit, OnChanges {
   private map!: google.maps.Map;
   private originMarker!: any;
   private destinationMarker!: any;
+  private directionsService!: google.maps.DirectionsService;
+  private directionsRenderer!: google.maps.DirectionsRenderer;
 
   constructor(private googleMapsService: GoogleMapsService){}
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['originCoordinates'] || changes['destinationCoordinates']) {
       this.updateMarkers();
+      this.updateRoute();
     }
   }
 
@@ -54,6 +57,9 @@ export class MapsComponent implements AfterViewInit, OnChanges {
       streetViewControl: false,
       fullscreenControl: true
     });
+    this.directionsService = new google.maps.DirectionsService();
+    this.directionsRenderer = new google.maps.DirectionsRenderer();
+    this.directionsRenderer.setMap(this.map);
   }
   private updateMarkers(): void {
     if (!this.map) return;
@@ -64,34 +70,59 @@ export class MapsComponent implements AfterViewInit, OnChanges {
 
     // Crear nuevo marcador para el origen si hay coordenadas
     if (this.originCoordinates) {
-      const customMarkerImg = document.createElement('img');
+      /*const customMarkerImg = document.createElement('img');
       customMarkerImg.src = 'marcador.png';
       customMarkerImg.style.width = '50px';
-      customMarkerImg.style.height = '50px';
+      customMarkerImg.style.height = '50px';*/
 
       this.originMarker = new google.maps.marker.AdvancedMarkerElement({
         position: this.originCoordinates,
         map: this.map,
         title: 'Origen',
-        content: customMarkerImg,
+        //content: customMarkerImg,
       });
       this.map.setCenter(this.originCoordinates); // Centrar el mapa en el origen
     }
 
     // Crear nuevo marcador para el destino si hay coordenadas
     if (this.destinationCoordinates) {
-      const customMarkerImg = document.createElement('img');
+      /*const customMarkerImg = document.createElement('img');
       customMarkerImg.src = 'marcador.png';
       customMarkerImg.style.width = '50px';
-      customMarkerImg.style.height = '50px';
+      customMarkerImg.style.height = '50px';*/
 
       this.destinationMarker = new google.maps.marker.AdvancedMarkerElement({
         position: this.destinationCoordinates,
         map: this.map,
         title: 'Destino',
-        content: customMarkerImg,
+        //content: customMarkerImg,
       });
     }
+  }
+
+  private updateRoute(): void {
+    if (!this.originCoordinates || !this.destinationCoordinates) return;
+
+    const origin = new google.maps.LatLng(this.originCoordinates.lat, this.originCoordinates.lng);
+    const destination = new google.maps.LatLng(this.destinationCoordinates.lat, this.destinationCoordinates.lng);
+
+    if (this.originMarker) this.originMarker.map = null;
+    if (this.destinationMarker) this.destinationMarker.map = null;
+
+    this.directionsService.route(
+      {
+        origin,
+        destination,
+        travelMode: google.maps.TravelMode.DRIVING,
+      },
+      (response, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          this.directionsRenderer.setDirections(response);
+        } else {
+          console.error('Directions request failed due to ' + status);
+        }
+      }
+    );
   }
 }
 
