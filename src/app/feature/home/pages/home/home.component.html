@@ -11,8 +11,10 @@
       </div>
       <button type="submit">Buscar Ruta</button>
     </form>
+    <!-- Historial Temporal -->
+    <app-search-container [searchHistory]="searchHistory"></app-search-container>
   </div>
   <div class="map-container">
-    <app-maps [originCoordinates]="originCoordinates" [destinationCoordinates]="destinationCoordinates"></app-maps>
+    <app-maps [originCoordinates]="originCoordinates" [destinationCoordinates]="destinationCoordinates" (routeGenerated)="onRouteGenerated($event)"></app-maps>
   </div>
 </div>

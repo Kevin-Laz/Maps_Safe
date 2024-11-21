@@ -1,0 +1,11 @@
+<div class="search-history">
+  <h3>Historial de Búsquedas</h3>
+  <ul>
+    <li *ngFor="let history of searchHistory">
+      <div>
+        <span class="route">{{ history.origin }} → {{ history.destination }}</span>
+        <span class="time">{{ history.duration }}</span>
+      </div>
+    </li>
+  </ul>
+</div>

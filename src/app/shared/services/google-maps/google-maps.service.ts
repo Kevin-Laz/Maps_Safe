@@ -21,7 +21,7 @@ export class GoogleMapsService {
 
       const script = document.createElement('script');
       script.id = 'google-maps-script';
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}&callback=initMapCallback&v=weekly&libraries=places&loading=async`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}&callback=initMapCallback&v=weekly&libraries=places,visualization&loading=async`;
       script.async = true;
       script.defer = true;
       script.onerror = (error: any) => {

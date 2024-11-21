@@ -1,0 +1,32 @@
+.search-history {
+  padding: 1rem;
+  border-top: 1px solid #d2daf5;
+
+  h3 {
+    margin: 0 0 1rem;
+    font-size: 1rem;
+    color: #396aff;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+
+    li {
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .route {
+        font-size: 0.9rem;
+        color: #0a8dc4;
+      }
+
+      .time {
+        font-size: 0.9rem;
+        color: #62bab8;
+      }
+    }
+  }
+}
