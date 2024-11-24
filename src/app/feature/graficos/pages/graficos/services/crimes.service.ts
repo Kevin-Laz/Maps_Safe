@@ -4,8 +4,11 @@ import { Observable } from 'rxjs';
 
 export interface Crime {
   id: number;
-  tipo: string;
-  fecha: string;
+  date_reported: string;
+  crime_description: string;
+  latitude: number;
+  longitude: number;
+
   // Agrega otros campos según tu API
 }
 
@@ -13,7 +16,7 @@ export interface Crime {
   providedIn: 'root'
 })
 export class CrimesService {
-  private apiUrl = 'https://api-maps-safe.onrender.com/crimes/';
+  private apiUrl = 'https://api-maps-safe.onrender.com/crimes/?limit=2000';
 
   constructor(private http: HttpClient) { }
 
