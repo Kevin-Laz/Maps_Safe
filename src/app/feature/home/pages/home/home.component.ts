@@ -85,7 +85,13 @@ export default class HomeComponent implements AfterViewInit{
   }
 
   onRouteGenerated(routeData: { origin: string; destination: string; duration: string }): void {
-    this.searchHistory = [routeData, ...this.searchHistory.slice(0, 4)]; // Limita a las últimas 5 búsquedas
+    this.searchHistory.unshift(routeData);
+
+    // Limitar el historial a las últimas 5 búsquedas
+    if (this.searchHistory.length > 5) {
+        this.searchHistory.pop();
+    }
+
     console.log('Historial actualizado:', this.searchHistory);
   }
 }

@@ -7,7 +7,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   imports: [CommonModule],
   templateUrl: './search-container.component.html',
   styleUrl: './search-container.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class SearchContainerComponent {
   @Input() searchHistory: { origin: string; destination: string; duration: string }[] = [];

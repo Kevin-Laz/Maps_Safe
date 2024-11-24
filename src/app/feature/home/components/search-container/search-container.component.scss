@@ -1,11 +1,18 @@
+@import 'mixins';
 .search-history {
   padding: 1rem;
   border-top: 1px solid #d2daf5;
+  overflow-y: auto;
+  max-height: calc(100vh - 270px);
+   /* Estilos para el desplazamiento */
+   scrollbar-width: thin; /* Ancho del scroll para navegadores compatibles */
+   scrollbar-color: #f0f0f0; /* Colores para la barra de desplazamiento */
 
   h3 {
     margin: 0 0 1rem;
     font-size: 1rem;
     color: #396aff;
+    margin-left: 3px;
   }
 
   ul {
@@ -29,4 +36,50 @@
       }
     }
   }
+
+  .history-container{
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+  }
+
+  &_section{
+    display: grid;
+    margin-bottom: 4px;
+    .headertext{
+      color: $black;
+      font-size: 0.7rem;
+      width: 47px;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+      padding: 4px;
+      background-color: aliceblue;
+      font-weight: 500;
+      span{
+        margin-left: 4px;
+      }
+    }
+    .route {
+      font-size: 0.8rem;
+      color: #0a8dc4;
+      background-color: aliceblue;
+      padding: 8px;
+      border-bottom-left-radius: 8px;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
+  }
+}
+/* Estilo para navegadores WebKit (Chrome, Edge, Safari) */
+.search-history::-webkit-scrollbar {
+  width: 10px; /* Ancho del scroll */
+}
+
+.search-history::-webkit-scrollbar-thumb {
+  background: #f0f0f0; /* Color de la barra */
+  border-radius: 10px; /* Bordes redondeados */
+}
+
+.search-history::-webkit-scrollbar-track {
+  background: #f0f0f0; /* Color del fondo del scroll */
 }
