@@ -20,7 +20,7 @@ export default class HomeComponent implements AfterViewInit{
   destination:string = '';
   originCoordinates: google.maps.LatLngLiteral | null = null;
   destinationCoordinates: google.maps.LatLngLiteral | null = null;
-  searchHistory: { origin: string; destination: string; duration: string }[] = []; // Historial
+  searchHistory: { origin: string; destination: string; duration: string; safe: number }[] = []; // Historial
   @ViewChild('originInput') originInput!: ElementRef;
   @ViewChild('destinationInput') destinationInput!: ElementRef;
 
@@ -84,7 +84,7 @@ export default class HomeComponent implements AfterViewInit{
     }
   }
 
-  onRouteGenerated(routeData: { origin: string; destination: string; duration: string }): void {
+  onRouteGenerated(routeData: { origin: string; destination: string; duration: string; safe: number }): void {
     this.searchHistory.unshift(routeData);
 
     // Limitar el historial a las últimas 5 búsquedas

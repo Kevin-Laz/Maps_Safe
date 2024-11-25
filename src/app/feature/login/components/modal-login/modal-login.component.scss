@@ -13,42 +13,44 @@
   @include md(){
     left: 150px;
     top: 0px;
-    width: 300px;
+    width: 260px;
   }
   h2 {
-    margin-bottom: 20px;
-    font-size: 18px;
-    color: #333;
+    font-size: 24px;
+    color: #234FA2;
     text-align: center;
-    font-weight: 400;
+    font-weight: bold;
+    margin-bottom: 20px;
   }
 
   .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 
     label {
       display: block;
-      font-size: 14px;
-      color: #333;
+      font-size: 16px;
+      color: #234FA2;
       margin-bottom: 5px;
-      font-weight: 300;
     }
 
     input {
       width: 100%;
       padding: 10px;
-      border: 1px solid #F7E523;
+      border: 1px solid #a1c9f1;
       border-radius: 5px;
       font-size: 14px;
       box-sizing: border-box;
+      background-color: #f4faff;
+      color: #234FA2;
 
       &:focus {
         outline: none;
-        border-color: #429c21; /* Color de borde al hacer foco */
-        box-shadow: 0 0 5px rgba(218, 230, 145, 0.5); /* Sombra en el focus */
+        border-color: #234FA2;
+        box-shadow: 0 0 5px rgba(35, 79, 162, 0.3);
       }
-      &::placeholder{
-        color: #d6bdd3;
+
+      &::placeholder {
+        color: #a1c9f1;
       }
     }
   }
@@ -56,48 +58,78 @@
   #login-button {
     display: block;
     width: 100%;
-    height: 40px;
-    text-align: center;
-    background-color: #429c21; /* Color del botón */
-    color: #fff;
+    padding: 12px;
+    background-color: #234FA2;
+    color: #ffffff;
     border: none;
     border-radius: 5px;
     font-size: 16px;
-    box-sizing: border-box;
-    padding: 0 10px;
     cursor: pointer;
+    text-align: center;
     transition: background-color 0.3s;
 
     &:hover {
-      background-color: #2980b9; /* Color al pasar el ratón */
+      background-color: #1a3c80;
+    }
+  }
+
+  .signup-section {
+    margin-top: 15px;
+    text-align: center;
+
+    .signup-text {
+      font-size: 14px;
+      color: #234FA2;
+    }
+
+    .signup-link {
+      color: #1a3c80;
+      cursor: pointer;
+      text-decoration: underline;
+
+      &:hover {
+        color: #0e295d;
+      }
+    }
+  }
+
+  .button-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    height: 30px;
+    width: 30px;
+    background-color: transparent;
+    color: #234FA2;
+
+    mat-icon {
+      font-size: 20px;
     }
   }
 }
 
-.colorize {
-  color: #000000 !important;
 
-  &_blue {
-    color: #234FA2 !important;
+.logout-container {
+  text-align: center;
+  margin-top: 20px;
+
+  p {
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 16px;
   }
 
-  &_red {
-    color: #D61A1A !important;
-  }
+  button {
+    background-color: #d61a1a; // Color rojo para cerrar sesión
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
 
-  &_yellow {
-    color: #F7E523 !important;
+    &:hover {
+      background-color: #a50d0d;
+    }
   }
-
-  &_green {
-    color: #429c21 !important;
-  }
-}
-
-.button-close{
-  height: 30px !important;
-  width: 30px !important;
-  position: absolute !important;
-  right: 5px;
-  top: 5px;
 }

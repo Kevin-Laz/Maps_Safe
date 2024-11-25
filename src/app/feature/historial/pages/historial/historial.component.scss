@@ -1,0 +1,53 @@
+.historial-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+
+  h2 {
+    text-align: center;
+    color: #234fa2;
+    margin-bottom: 20px;
+  }
+
+  .loading-spinner,
+  .error-message,
+  .no-history {
+    text-align: center;
+    font-size: 18px;
+    color: #d61a1a;
+    margin-top: 20px;
+  }
+
+  .history-list {
+    list-style: none;
+    padding: 0;
+
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+
+      .route-info {
+        flex: 1;
+        margin-right: 10px;
+
+        p {
+          margin: 5px 0;
+        }
+      }
+
+      .route-image {
+        img {
+          max-width: 150px;
+          max-height: 100px;
+          border-radius: 4px;
+        }
+      }
+    }
+  }
+}

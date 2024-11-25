@@ -10,5 +10,5 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class SearchContainerComponent {
-  @Input() searchHistory: { origin: string; destination: string; duration: string }[] = [];
+  @Input() searchHistory: { origin: string; destination: string; duration: string; safe: number }[] = [];
 }
