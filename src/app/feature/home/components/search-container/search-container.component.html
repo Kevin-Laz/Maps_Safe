@@ -1,0 +1,41 @@
+<div class="search-history">
+  <h3>Búsquedas recientes</h3>
+  <ul>
+    <li *ngFor="let history of searchHistory">
+      <div class="history-container">
+        <div class="search-history_section">
+          <div class="headertext">
+            <span>Origen</span>
+          </div>
+          <div class="route">
+            <span>{{ history.origin }}</span>
+          </div>
+        </div>
+        <div class="search-history_section">
+          <div class="headertext">
+            <span>Destino</span>
+          </div>
+          <div class="route">
+            <span>{{ history.destination }}</span>
+          </div>
+        </div>
+        <div class="search-history_section">
+          <div class="headertext">
+            <span>Safety</span>
+          </div>
+          <div class="route">
+            <span>{{ history.safe | percent:'0.0-0' }}</span>
+          </div>
+        </div>
+        <div class="search-history_section">
+          <div class="headertext">
+            <span>Tiempo</span>
+          </div>
+          <div class="route">
+            <span>{{ history.duration }}</span>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>

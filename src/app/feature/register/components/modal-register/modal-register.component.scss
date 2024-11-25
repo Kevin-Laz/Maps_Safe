@@ -1,0 +1,110 @@
+@import 'settings';
+@import 'mixins';
+
+.register-modal {
+  background-color: #ffffff; /* Fondo blanco */
+  padding: 20px;
+  width: 350px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Sombra elegante */
+  position: absolute;
+  z-index: 1000;
+
+  @include md() {
+    left: 150px;
+    top: 0px;
+    width: 260px;
+  }
+
+  h2 {
+    font-size: 24px;
+    color: #234FA2; /* Azul profesional */
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+
+    label {
+      display: block;
+      font-size: 16px;
+      color: #234FA2; /* Azul profesional */
+      margin-bottom: 5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #a1c9f1; /* Azul claro */
+      border-radius: 5px;
+      font-size: 14px;
+      box-sizing: border-box;
+      background-color: #f4faff; /* Fondo suave */
+      color: #234FA2;
+
+      &:focus {
+        outline: none;
+        border-color: #234FA2;
+        box-shadow: 0 0 5px rgba(35, 79, 162, 0.3); /* Resalte azul */
+      }
+
+      &::placeholder {
+        color: #a1c9f1;
+      }
+    }
+  }
+
+  #register-button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #234FA2; /* Azul principal */
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #1a3c80; /* Azul oscuro */
+    }
+  }
+
+  .login-redirect {
+    margin-top: 15px;
+    text-align: center;
+
+    .login-text {
+      font-size: 14px;
+      color: #234FA2;
+    }
+
+    .login-link {
+      color: #1a3c80; /* Azul más oscuro */
+      cursor: pointer;
+      text-decoration: underline;
+
+      &:hover {
+        color: #0e295d; /* Azul aún más oscuro */
+      }
+    }
+  }
+
+  .button-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    height: 30px;
+    width: 30px;
+    background-color: transparent;
+    color: #234FA2;
+
+    mat-icon {
+      font-size: 20px;
+    }
+  }
+}

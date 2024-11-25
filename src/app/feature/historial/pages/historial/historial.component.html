@@ -1,1 +1,33 @@
-<p>historial works!</p>
+<div class="historial-container">
+  <h2>Historial de Rutas</h2>
+
+  <!-- Mostrar un spinner mientras se cargan los datos -->
+  <div *ngIf="isLoading" class="loading-spinner">
+    <p>Cargando historial...</p>
+  </div>
+
+  <!-- Mostrar un mensaje de error si ocurre algún problema -->
+  <div *ngIf="!isLoading && errorMessage" class="error-message">
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <!-- Mostrar la lista de rutas -->
+  <ul *ngIf="!isLoading && !errorMessage && routeHistory.length > 0" class="history-list">
+    <li *ngFor="let route of routeHistory" class="history-item">
+      <div class="route-info">
+        <p><strong>Origen:</strong> {{ route.origin_location }}</p>
+        <p><strong>Destino:</strong> {{ route.destination_location }}</p>
+        <p><strong>Nivel de Seguridad:</strong> {{ route.security_level | number: '1.0-2' }}</p>
+        <p><strong>Fecha:</strong> {{ route.created_at | date: 'short' }}</p>
+      </div>
+      <div class="route-image">
+        <img [src]="route.map_image_url" alt="Mapa estático de la ruta" />
+      </div>
+    </li>
+  </ul>
+
+  <!-- Mostrar un mensaje si no hay rutas en el historial -->
+  <div *ngIf="!isLoading && !errorMessage && routeHistory.length === 0" class="no-history">
+    <p>No se encontraron rutas en tu historial.</p>
+  </div>
+</div>

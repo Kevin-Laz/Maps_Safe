@@ -5,11 +5,12 @@ import { ModalRegisterComponent } from "../../../register/components/modal-regis
 import { FormsModule } from '@angular/forms';
 import { GeocodingService } from '../../../../shared/services/geocoding/geocoding.service';
 import { GoogleMapsService } from '../../../../shared/services/google-maps/google-maps.service';
+import { SearchContainerComponent } from "../../components/search-container/search-container.component";
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [MapsComponent, GoogleMapsModule, ModalRegisterComponent, FormsModule],
+  imports: [MapsComponent, GoogleMapsModule, ModalRegisterComponent, FormsModule, SearchContainerComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   changeDetection: ChangeDetectionStrategy.Default,
@@ -19,7 +20,7 @@ export default class HomeComponent implements AfterViewInit{
   destination:string = '';
   originCoordinates: google.maps.LatLngLiteral | null = null;
   destinationCoordinates: google.maps.LatLngLiteral | null = null;
-
+  searchHistory: { origin: string; destination: string; duration: string; safe: number }[] = []; // Historial
   @ViewChild('originInput') originInput!: ElementRef;
   @ViewChild('destinationInput') destinationInput!: ElementRef;
 
@@ -76,14 +77,21 @@ export default class HomeComponent implements AfterViewInit{
     try {
       this.originCoordinates = await this.geocodingService.geocodeAddress(this.origin);
       this.destinationCoordinates = await this.geocodingService.geocodeAddress(this.destination);
-
-      console.log('Origen:', this.originCoordinates);
-      console.log('Destino:', this.destinationCoordinates);
-
       // Forzar la detección de cambios
       this.cdr.detectChanges();
     } catch (error) {
       console.error(error);
     }
+  }
+
+  onRouteGenerated(routeData: { origin: string; destination: string; duration: string; safe: number }): void {
+    this.searchHistory.unshift(routeData);
+
+    // Limitar el historial a las últimas 5 búsquedas
+    if (this.searchHistory.length > 5) {
+        this.searchHistory.pop();
+    }
+
+    console.log('Historial actualizado:', this.searchHistory);
   }
 }
