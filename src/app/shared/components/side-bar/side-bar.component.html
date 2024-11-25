@@ -19,5 +19,6 @@
       </button>
     </li>
   </ul>
-  <app-modal-login id="c-login-modal" [toggleModal]="modalLoginStatus" (toggleUpdate)="changeModalLoginSatus()"></app-modal-login>
+  <app-modal-login id="c-login-modal" *ngIf="!registerActive" [toggleModal]="modalLoginStatus" (toggleUpdate)="changeModalLoginSatus()" (changeModal)="redirectModalRegister()"></app-modal-login>
+  <app-modal-register *ngIf="registerActive" [toggleRegister]="modalLoginStatus" (toggleUpdate)="changeModalLoginSatus()" (changeModal)="redirectModalLogin()"></app-modal-register>
 </nav>
