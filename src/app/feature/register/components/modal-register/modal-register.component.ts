@@ -25,15 +25,41 @@ export class ModalRegisterComponent {
   OnSubmitted:boolean = false;
   errorMessage: string = '';
   isAuthenticated: boolean = false; // Estado de autenticación
-
+  successMessage: string = '';
   constructor(private authService: AuthService) {}
 
   private updateAuthStatus(): void {
     this.isAuthenticated = this.authService.isAuthenticated(); // Verifica si el usuario está autenticado
   }
 
-  onRegister(from: FormsModule){
-
+  onRegister(form: NgForm): void {
+    if (form.valid) {
+      if (this.textPassword === this.textConfirmPassword) {
+        this.authService.register(this.textEmail, this.textPassword).subscribe(
+          (success) => {
+            if (success) {
+              this.successMessage = 'Registration successful!';
+              this.errorMessage = '';
+              form.reset(); // Reset the form on success
+            } else {
+              this.errorMessage = 'Registration failed. Please try again.';
+              this.successMessage = '';
+            }
+          },
+          (error) => {
+            console.error('Error during registration:', error);
+            this.errorMessage = 'An error occurred. Please try again.';
+            this.successMessage = '';
+          }
+        );
+      } else {
+        this.errorMessage = 'Passwords do not match.';
+        this.successMessage = '';
+      }
+    } else {
+      this.errorMessage = 'Please fill in all required fields.';
+      this.successMessage = '';
+    }
   }
   onLoginRedirect(){
     this.changeModal.emit();

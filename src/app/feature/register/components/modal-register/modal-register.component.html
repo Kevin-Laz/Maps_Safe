@@ -51,5 +51,7 @@
   <button id="exit-button" mat-fab class="button-close" (click)="changeToggleRegister()">
     <mat-icon>close</mat-icon>
   </button>
+  <p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
+  <p *ngIf="successMessage" style="color: blue;">{{ successMessage }}</p>
 </div>
 
