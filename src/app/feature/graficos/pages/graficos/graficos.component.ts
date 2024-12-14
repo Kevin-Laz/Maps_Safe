@@ -18,7 +18,7 @@ declare const ApexCharts: any;
   styleUrls: ['./graficos.component.scss']
 })
 
-export class GraficosComponent implements OnInit {
+export default class GraficosComponent implements OnInit {
   constructor( private crimeSummary: CrimeSummaryService){}
   ngOnInit(): void {
     this.loadPieChart();
