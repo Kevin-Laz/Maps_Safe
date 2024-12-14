@@ -1,3 +1,7 @@
+.container-main-chart{
+  overflow-y: auto;
+  height: 100vh;
+}
 .chart-container {
   max-width: 400px;
   width: 100%;
@@ -29,6 +33,25 @@
       }
     }
 
+    .text-muted {
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+
+    .chart-percentage {
+      display: flex;
+      align-items: center;
+      font-size: 0.875rem;
+      font-weight: bold;
+      color: #10b981;
+
+      .icon {
+        width: 10px;
+        height: 14px;
+        margin-left: 0.25rem;
+      }
+    }
+
     .date-range-button {
       background: none;
       border: none;
@@ -49,35 +72,67 @@
       height: 300px;
     }
   }
+}
 
-  .chart-footer {
-    display: flex;
-    justify-content: space-between;
+.dropdown {
+  position: relative;
+  display: inline-block;
+
+  .dropdown-button {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #6b7280;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
     align-items: center;
-    padding-top: 1rem;
-    border-top: 1px solid #e5e7eb;
+    transition: color 0.3s;
 
-    .dropdown-button {
-      background: none;
-      border: none;
-      color: #6b7280;
-      font-size: 0.875rem;
-      cursor: pointer;
+    &:hover {
+      color: #1c64f2;
+    }
 
-      &:hover {
-        color: #1c64f2;
+    .dropdown-icon {
+      width: 10px;
+      height: 6px;
+      margin-left: 0.5rem;
+    }
+  }
+
+  .dropdown-menu {
+    width: 150px;
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    display: block;
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li a {
+        display: block;
+        padding: 0.5rem 1rem;
+        text-decoration: none;
+        color: #6b7280;
+        transition: background 0.3s, color 0.3s;
+
+        &:hover {
+          background: #f3f4f6;
+          color: #1c64f2;
+        }
       }
     }
 
-    .traffic-analysis-button {
-      font-size: 0.875rem;
-      font-weight: bold;
-      color: #1c64f2;
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
+    &.hidden {
+      display: none;
     }
   }
 }
