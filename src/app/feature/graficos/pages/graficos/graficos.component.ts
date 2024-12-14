@@ -2,8 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angula
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CrimeSummaryService } from './services/crime-summary/crime-summary.service';
-import { PieChartData } from '../../../../data/models/chart';
-import ApexCharts from 'apexcharts';
+declare const ApexCharts: any;
 
 
 
