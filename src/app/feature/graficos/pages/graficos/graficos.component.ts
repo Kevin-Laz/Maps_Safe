@@ -22,17 +22,19 @@ export default class GraficosComponent implements OnInit {
   // Control de visibilidad de dropdowns
   isDropdownVisibleLine = false;
   isDropdownVisiblePie = false;
-
+  menuYear: number[] = [2020,2021,2022,2023,2024];
   monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
+  yearLineSelected = this.menuYear[0];
+  yearPaiSelected = this.menuYear[0];
 
   constructor(private crimeSummary: CrimeSummaryService) {}
 
   ngOnInit(): void {
-    this.loadPieChart();
-    this.loadAreaChart();
+    this.loadPieChart(2020);
+    this.loadAreaChart(2020);
   }
 
   // Métodos para alternar dropdowns
@@ -45,8 +47,8 @@ export default class GraficosComponent implements OnInit {
   }
 
   // Cargar el gráfico de área
-  private loadAreaChart(): void {
-    this.crimeSummary.getCrimeSummary(2020, 'line').subscribe({
+  private loadAreaChart(year: number): void {
+    this.crimeSummary.getCrimeSummary(year, 'line').subscribe({
       next: (data) => {
         const chartOptions = this.getLineChartOptions(
           data.map((item) => this.monthNames[item.mes-1]),
@@ -62,8 +64,8 @@ export default class GraficosComponent implements OnInit {
   }
 
   // Cargar el gráfico de pastel
-  private loadPieChart(): void {
-    this.crimeSummary.getCrimeSummary(2020, 'pie').subscribe({
+  private loadPieChart(year: number): void {
+    this.crimeSummary.getCrimeSummary(year, 'pie').subscribe({
       next: (data) => {
         const groupedData = this.groupPieChartData(data, 0.1); // Agrupar datos con un umbral del 10%
         const chartOptions = this.getPieChartOptions(groupedData.labels, groupedData.series);

@@ -16,7 +16,7 @@
         class="dropdown-button"
         (click)="toggleDropdown('pie')"
         type="button">
-        Last 7 days
+        Year {{ yearPaiSelected}}
         <svg class="dropdown-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l4 4 4-4" />
         </svg>
@@ -27,11 +27,9 @@
         class="dropdown-menu"
         [class.hidden]="!isDropdownVisiblePie">
         <ul>
-          <li><a href="#">Yesterday</a></li>
-          <li><a href="#">Today</a></li>
-          <li><a href="#">Last 7 days</a></li>
-          <li><a href="#">Last 30 days</a></li>
-          <li><a href="#">Last 90 days</a></li>
+          @for (item of menuYear; track $index) {
+            <li>{{ item }}</li>
+          }
         </ul>
       </div>
     </div>
@@ -61,7 +59,7 @@
         class="dropdown-button"
         (click)="toggleDropdown('line')"
         type="button">
-        Last 7 days
+        Year {{ yearLineSelected }}
         <svg class="dropdown-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l4 4 4-4" />
         </svg>
@@ -72,11 +70,9 @@
         class="dropdown-menu"
         [class.hidden]="!isDropdownVisibleLine">
         <ul>
-          <li><a href="#">Yesterday</a></li>
-          <li><a href="#">Today</a></li>
-          <li><a href="#">Last 7 days</a></li>
-          <li><a href="#">Last 30 days</a></li>
-          <li><a href="#">Last 90 days</a></li>
+          @for (item of menuYear; track $index) {
+            <li>{{ item }}</li>
+          }
         </ul>
       </div>
     </div>
