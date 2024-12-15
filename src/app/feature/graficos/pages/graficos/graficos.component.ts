@@ -20,6 +20,10 @@ declare const ApexCharts: any;
 
 export default class GraficosComponent implements OnInit {
   // Control de visibilidad de dropdowns
+  chartInstanceLine: any | null = null;
+  chartInstancePie: any | null = null;
+
+
   isDropdownVisibleLine = false;
   isDropdownVisiblePie = false;
   menuYear: number[] = [2020,2021,2022,2023,2024];
@@ -46,16 +50,34 @@ export default class GraficosComponent implements OnInit {
     }
   }
 
+  updateChart(year: number, type: 'line' | 'pie'){
+    if(type == 'line'){
+      this.yearLineSelected = year;
+      this.loadAreaChart(this.yearLineSelected);
+      this.toggleDropdown('line');
+    }
+    if(type == 'pie'){
+      this.yearPaiSelected = year;
+      this.loadPieChart(this.yearPaiSelected);
+      this.toggleDropdown('pie');
+    }
+
+  }
+
   // Cargar el gráfico de área
   private loadAreaChart(year: number): void {
+    // Destruir el gráfico anterior si existe
+  if (this.chartInstanceLine) {
+    this.chartInstanceLine.destroy();
+  }
     this.crimeSummary.getCrimeSummary(year, 'line').subscribe({
       next: (data) => {
         const chartOptions = this.getLineChartOptions(
           data.map((item) => this.monthNames[item.mes-1]),
           data.map((item) => item.cantidad)
         );
-        const chart = new ApexCharts(document.getElementById('area-chart'), chartOptions);
-        chart.render();
+        this.chartInstanceLine = new ApexCharts(document.getElementById('area-chart'), chartOptions);
+        this.chartInstanceLine.render();
       },
       error: (err) => {
         console.error('Error al cargar el gráfico de área:', err);
@@ -65,12 +87,15 @@ export default class GraficosComponent implements OnInit {
 
   // Cargar el gráfico de pastel
   private loadPieChart(year: number): void {
+    if(this.chartInstancePie){
+      this.chartInstancePie.destroy();
+    }
     this.crimeSummary.getCrimeSummary(year, 'pie').subscribe({
       next: (data) => {
         const groupedData = this.groupPieChartData(data, 0.1); // Agrupar datos con un umbral del 10%
         const chartOptions = this.getPieChartOptions(groupedData.labels, groupedData.series);
-        const chart = new ApexCharts(document.getElementById('pie-chart'), chartOptions);
-        chart.render();
+        this.chartInstancePie = new ApexCharts(document.getElementById('pie-chart'), chartOptions);
+        this.chartInstancePie.render();
       },
       error: (err) => {
         console.error('Error al cargar el gráfico de pastel:', err);
@@ -82,7 +107,7 @@ export default class GraficosComponent implements OnInit {
   private getLineChartOptions(categories: string[], seriesData: number[]): any {
     return {
       chart: {
-        height: '100%',
+        height: '226px',
         maxWidth: '100%',
         type: 'area',
         fontFamily: 'Inter, sans-serif',

@@ -71,7 +71,15 @@
     .chart {
       height: 300px;
     }
+    .chartPie{
+      min-height: 420px !important;
+    }
+
   }
+}
+
+.chartLine{
+  min-height: 226px !important;
 }
 
 .dropdown {
@@ -101,7 +109,7 @@
   }
 
   .dropdown-menu {
-    width: 150px;
+    width: 80px;
     position: absolute;
     bottom: 100%;
     left: 0;
@@ -119,6 +127,7 @@
 
       li{
         display: block;
+        cursor: pointer;
         padding: 0.5rem 1rem;
         text-decoration: none;
         color: #6b7280;

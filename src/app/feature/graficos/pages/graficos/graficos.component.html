@@ -2,12 +2,12 @@
   <div class="chart-container">
     <div class="chart-header">
       <div class="chart-title">
-        <h5>Website Traffic</h5>
+        <h5>Crime per type</h5>
       </div>
     </div>
 
     <div class="chart-body">
-      <div id="pie-chart" class="chart"></div>
+      <div id="pie-chart" class="chartPie"></div>
     </div>
 
     <!-- Footer -->
@@ -28,7 +28,7 @@
         [class.hidden]="!isDropdownVisiblePie">
         <ul>
           @for (item of menuYear; track $index) {
-            <li>{{ item }}</li>
+            <li (click)="updateChart(item, 'pie')">{{ item }}</li>
           }
         </ul>
       </div>
@@ -40,7 +40,7 @@
     <div class="chart-header">
       <div>
         <h5 class="chart-title">32.4k</h5>
-        <p class="text-muted">Users this week</p>
+        <p class="text-muted">Tendence per month</p>
       </div>
       <div class="chart-percentage">
         12%
@@ -51,7 +51,7 @@
     </div>
 
     <!-- Chart Area -->
-    <div id="area-chart" class="chart"></div>
+    <div id="area-chart" class="chartLine"></div>
 
     <!-- Footer -->
     <div class="dropdown">
@@ -71,12 +71,10 @@
         [class.hidden]="!isDropdownVisibleLine">
         <ul>
           @for (item of menuYear; track $index) {
-            <li>{{ item }}</li>
+            <li (click)="updateChart(item, 'line')">{{ item }}</li>
           }
         </ul>
       </div>
     </div>
-
   </div>
-
 </div>
