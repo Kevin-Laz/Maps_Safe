@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import GraficosComponent from './graficos.component';
 
-import {GraficosComponent} from './graficos.component';
 
 describe('GraficosComponent', () => {
   let component: GraficosComponent;

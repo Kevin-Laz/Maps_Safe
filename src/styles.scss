@@ -1,8 +1,6 @@
-@import 'scss/settings';
-@import 'scss/mixins';
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: $baseT;}
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: #eaecf1;}
 
 
 /* You can add global styles to this file, and also import other style files */
@@ -29,7 +27,7 @@ input[type="date"] {
   border-radius: 4px;
   font-size: 14px;
   transition: border-color 0.3s ease;
-  
+
   &:focus {
     outline: none;
     border-color: #1a237e;
