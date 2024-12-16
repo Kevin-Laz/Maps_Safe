@@ -1,14 +1,28 @@
 .container-main-chart{
   overflow-y: auto;
+  overflow-x: hidden;
   height: 100vh;
+  margin-left: 8px;
+  padding-right: 8px;
+}
+.group-chart{
+  display: flex;
+  column-gap: 8px;
+  margin-bottom: 8px;
+}
+.pai{
+  max-width: 450px;
 }
 .chart-container {
-  max-width: 400px;
   width: 100%;
   background: #ffffff;
   border-radius: 0.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 1rem;
+
+  .line{
+    max-width: 800px;
+  }
 
   .chart-header {
     display: flex;
@@ -80,6 +94,9 @@
 
 .chartLine{
   min-height: 226px !important;
+}
+.chartBar{
+  min-height: 452px !important;
 }
 
 .dropdown {

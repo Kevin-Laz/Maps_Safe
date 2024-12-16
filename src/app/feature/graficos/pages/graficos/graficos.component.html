@@ -1,53 +1,85 @@
 <div class="container-main-chart">
-  <div class="chart-container">
-    <div class="chart-header">
-      <div class="chart-title">
-        <h5>Crime per type</h5>
+  <div class="group-chart">
+    <div class="chart-container pai">
+      <div class="chart-header">
+        <div class="chart-title">
+          <h5>Crime per type</h5>
+        </div>
+      </div>
+
+      <div class="chart-body">
+        <div id="pie-chart" class="chartPie"></div>
+      </div>
+
+      <!-- Footer -->
+      <div class="dropdown">
+        <button
+          class="dropdown-button"
+          (click)="toggleDropdown('pie')"
+          type="button">
+          Year {{ yearPaiSelected}}
+          <svg class="dropdown-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l4 4 4-4" />
+          </svg>
+        </button>
+
+        <div
+          id="lastDaysdropdown"
+          class="dropdown-menu"
+          [class.hidden]="!isDropdownVisiblePie">
+          <ul>
+            @for (item of menuYear; track $index) {
+              <li (click)="updateChart(item, 'pie')">{{ item }}</li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="chart-container">
+      <div class="chart-header">
+        <div class="chart-title">
+          <h5>Crime per month</h5>
+        </div>
+      </div>
+      <!-- Chart Section -->
+      <div class="chart-content">
+        <div id="bar-chart" class="chartBar"></div>
+      </div>
+
+      <!-- Footer -->
+      <div class="dropdown">
+        <button
+          class="dropdown-button"
+          (click)="toggleDropdown('bar')"
+          type="button">
+          Year {{ yearBarSelected}}
+          <svg class="dropdown-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l4 4 4-4" />
+          </svg>
+        </button>
+
+        <div
+          id="lastDaysdropdown"
+          class="dropdown-menu"
+          [class.hidden]="!isDropdownVisibleBar">
+          <ul>
+            @for (item of menuYear; track $index) {
+              <li (click)="updateChart(item, 'bar')">{{ item }}</li>
+            }
+          </ul>
+        </div>
       </div>
     </div>
 
-    <div class="chart-body">
-      <div id="pie-chart" class="chartPie"></div>
-    </div>
-
-    <!-- Footer -->
-    <div class="dropdown">
-      <button
-        class="dropdown-button"
-        (click)="toggleDropdown('pie')"
-        type="button">
-        Year {{ yearPaiSelected}}
-        <svg class="dropdown-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l4 4 4-4" />
-        </svg>
-      </button>
-
-      <div
-        id="lastDaysdropdown"
-        class="dropdown-menu"
-        [class.hidden]="!isDropdownVisiblePie">
-        <ul>
-          @for (item of menuYear; track $index) {
-            <li (click)="updateChart(item, 'pie')">{{ item }}</li>
-          }
-        </ul>
-      </div>
-    </div>
   </div>
 
-  <div class="chart-container">
+
+  <div class="chart-container line">
     <!-- Header -->
     <div class="chart-header">
-      <div>
-        <h5 class="chart-title">32.4k</h5>
-        <p class="text-muted">Tendence per month</p>
-      </div>
-      <div class="chart-percentage">
-        12%
-        <svg class="icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 14">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13V1m0 0L1 5m4-4 4 4" />
-        </svg>
-      </div>
+      <div class="chart-title">
+          <h5>Tendence per month</h5>
+        </div>
     </div>
 
     <!-- Chart Area -->
