@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angula
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CrimeSummaryService } from './services/crime-summary/crime-summary.service';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 declare const ApexCharts: any;
 
 
@@ -12,7 +13,8 @@ declare const ApexCharts: any;
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './graficos.component.html',
   styleUrls: ['./graficos.component.scss']
@@ -23,6 +25,10 @@ export default class GraficosComponent implements OnInit {
   chartInstanceLine: any | null = null;
   chartInstancePie: any | null = null;
   chartInstanceBar: any | null = null;
+
+  isLoadingPie = true;
+  isLoadingBar = true;
+  isLoadingLine = true;
 
   isDropdownVisibleLine = false;
   isDropdownVisiblePie = false;
@@ -82,6 +88,7 @@ export default class GraficosComponent implements OnInit {
     // Destruir el gráfico anterior si existe
   if (this.chartInstanceLine) {
     this.chartInstanceLine.destroy();
+    this.isLoadingLine = true;
   }
     this.crimeSummary.getCrimeSummary(year, 'line').subscribe({
       next: (data) => {
@@ -91,6 +98,7 @@ export default class GraficosComponent implements OnInit {
         );
         this.chartInstanceLine = new ApexCharts(document.getElementById('area-chart'), chartOptions);
         this.chartInstanceLine.render();
+        this.isLoadingLine = false;
       },
       error: (err) => {
         console.error('Error al cargar el gráfico de área:', err);
@@ -102,6 +110,7 @@ export default class GraficosComponent implements OnInit {
   private loadPieChart(year: number): void {
     if(this.chartInstancePie){
       this.chartInstancePie.destroy();
+      this.isLoadingPie = true;
     }
     this.crimeSummary.getCrimeSummary(year, 'pie').subscribe({
       next: (data) => {
@@ -109,6 +118,7 @@ export default class GraficosComponent implements OnInit {
         const chartOptions = this.getPieChartOptions(groupedData.labels, groupedData.series);
         this.chartInstancePie = new ApexCharts(document.getElementById('pie-chart'), chartOptions);
         this.chartInstancePie.render();
+        this.isLoadingPie = false;
       },
       error: (err) => {
         console.error('Error al cargar el gráfico de pastel:', err);
@@ -120,6 +130,7 @@ export default class GraficosComponent implements OnInit {
       // Destruir el gráfico anterior si existe
   if (this.chartInstanceBar) {
     this.chartInstanceBar.destroy();
+    this.isLoadingBar = true;
   }
     this.crimeSummary.getCrimeSummary(year, 'bar').subscribe({
       next: (data) => {
@@ -129,6 +140,7 @@ export default class GraficosComponent implements OnInit {
         );
         this.chartInstanceBar = new ApexCharts(document.getElementById('bar-chart'), chartOptions);
         this.chartInstanceBar.render();
+        this.isLoadingBar = false;
       },
       error: (err) => {
         console.error('Error al cargar el gráfico de barras:', err);
