@@ -7,6 +7,15 @@
         </div>
       </div>
 
+      @if (isLoadingPie) {
+        <div class="loading-spinner">
+          <mat-progress-spinner
+          color="primary"
+          mode="indeterminate"
+          diameter="50">>
+        </mat-progress-spinner>
+        </div>
+      }
       <div class="chart-body">
         <div id="pie-chart" class="chartPie"></div>
       </div>
@@ -41,6 +50,15 @@
           <h5>Crime per month</h5>
         </div>
       </div>
+      @if (isLoadingBar) {
+        <div class="loading-spinner">
+          <mat-progress-spinner
+          color="primary"
+          mode="indeterminate"
+          diameter="50">>
+        </mat-progress-spinner>
+        </div>
+      }
       <!-- Chart Section -->
       <div class="chart-content">
         <div id="bar-chart" class="chartBar"></div>
@@ -83,6 +101,15 @@
     </div>
 
     <!-- Chart Area -->
+    @if (isLoadingLine) {
+      <div class="loading-spinner">
+        <mat-progress-spinner
+        color="primary"
+        mode="indeterminate"
+        diameter="50">>
+      </mat-progress-spinner>
+      </div>
+    }
     <div id="area-chart" class="chartLine"></div>
 
     <!-- Footer -->

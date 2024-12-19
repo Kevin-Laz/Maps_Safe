@@ -3,7 +3,11 @@
 
   <!-- Mostrar un spinner mientras se cargan los datos -->
   <div *ngIf="isLoading" class="loading-spinner">
-    <p>Cargando historial...</p>
+    <mat-progress-spinner
+    color="primary"
+    mode="indeterminate"
+    diameter="50">>
+  </mat-progress-spinner>
   </div>
 
   <!-- Mostrar un mensaje de error si ocurre algún problema -->

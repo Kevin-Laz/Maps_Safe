@@ -25,6 +25,7 @@
   }
 }
 .chart-container {
+  height: 542px;
   width: 100%;
   background: #ffffff;
   border-radius: 0.5rem;
@@ -177,4 +178,11 @@
 }
 .line{
   max-width: 99%;
+  height: 320px !important;
+}
+.loading-spinner{
+  display: flex;
+  justify-content: center; /* Centrado horizontal */
+  align-items: center;     /* Centrado vertical */
+  height: 100%;
 }
