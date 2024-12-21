@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { HistoryService } from '../../../../shared/services/history/history.service';
 import { CommonModule } from '@angular/common';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-historial',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatProgressSpinnerModule],
   templateUrl: './historial.component.html',
   styleUrl: './historial.component.scss',
   changeDetection: ChangeDetectionStrategy.Default
@@ -25,7 +26,7 @@ export class HistorialComponent implements OnInit{
   private loadHistory(): void {
     const token = localStorage.getItem('access_token');
     if (!token) {
-      this.errorMessage = 'No se encontró el token de sesión. Por favor, inicia sesión nuevamente.';
+      this.errorMessage = 'You need to log in to access your history.';
       this.isLoading = false;
       return;
     }
@@ -47,7 +48,7 @@ export class HistorialComponent implements OnInit{
       },
       (error) => {
         console.error('Error al cargar el historial:', error);
-        this.errorMessage = 'Error al cargar el historial. Por favor, intenta nuevamente.';
+        this.errorMessage = 'Error loading the history. Please try again.';
         this.isLoading = false;
       }
     );

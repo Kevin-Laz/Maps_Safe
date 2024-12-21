@@ -1,133 +1,138 @@
-<div class="app-container p-4">
-  <div class="mb-8">
-    <h1 class="text-2xl font-bold mb-6">Dashboard Crimes</h1>
-    
-    <!-- Filtros -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-      <div class="filter-container">
-        <label for="crimeType" class="block mb-2">Type of Crime</label>
-        <select 
-          id="crimeType" 
-          class="w-full p-2 border rounded"
-          [(ngModel)]="selectedCrimeType"
-          (ngModelChange)="applyFilters()">
-          <option value="">All</option>
-          <option *ngFor="let type of crimeTypes" [value]="type">
-            {{type}}
-          </option>
-        </select>
-      </div>
-
-      <div class="filter-container">
-        <label for="month" class="block mb-2">Month</label>
-        <select 
-          id="month" 
-          class="w-full p-2 border rounded"
-          [(ngModel)]="selectedMonth"
-          (ngModelChange)="applyFilters()">
-          <option value="">All</option>
-          <option *ngFor="let month of months" [value]="month.value">
-            {{month.label}}
-          </option>
-        </select>
-      </div>
-
-      <div class="filter-container">
-        <label for="year" class="block mb-2">Year</label>
-        <select 
-          id="year" 
-          class="w-full p-2 border rounded"
-          [(ngModel)]="selectedYear"
-          (ngModelChange)="applyFilters()">
-          <option value="">All</option>
-          <option *ngFor="let year of years" [value]="year">
-            {{year}}
-          </option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Gráficos -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-      <div class="card p-4 bg-white rounded shadow">
-        <h3 class="text-lg font-semibold mb-4">Crime per type</h3>
-        <div style="height: 400px">
-          <canvas #crimeTypeChart></canvas>
+<div class="container-main-chart">
+  <div class="group-chart">
+    <div class="chart-container pai">
+      <div class="chart-header">
+        <div class="chart-title">
+          <h5>Crime per type</h5>
         </div>
       </div>
 
-      <div class="card p-4 bg-white rounded shadow">
-        <h3 class="text-lg font-semibold mb-4">Tendence per time</h3>
-        <div style="height: 400px">
-          <canvas #crimeTimelineChart></canvas>
+      @if (isLoadingPie) {
+        <div class="loading-spinner">
+          <mat-progress-spinner
+          color="primary"
+          mode="indeterminate"
+          diameter="50">>
+        </mat-progress-spinner>
+        </div>
+      }
+      <div class="chart-body">
+        <div id="pie-chart" class="chartPie"></div>
+      </div>
+
+      <!-- Footer -->
+      <div class="dropdown">
+        <button
+          class="dropdown-button"
+          (click)="toggleDropdown('pie')"
+          type="button">
+          Year {{ yearPaiSelected}}
+          <svg class="dropdown-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l4 4 4-4" />
+          </svg>
+        </button>
+
+        <div
+          id="lastDaysdropdown"
+          class="dropdown-menu"
+          [class.hidden]="!isDropdownVisiblePie">
+          <ul>
+            @for (item of menuYear; track $index) {
+              <li (click)="updateChart(item, 'pie')">{{ item }}</li>
+            }
+          </ul>
         </div>
       </div>
     </div>
-
-    <!-- Lista de Últimos Crímenes -->
-    <div class="card p-4 bg-white rounded shadow">
-      <h3 class="text-lg font-semibold mb-4">Latest Recorded Crimes</h3>
-      <div class="overflow-x-auto">
-        <style>
-          .crimes-table {
-            width: 100%;
-            border-collapse: collapse;
-            border: 1px solid #ddd;
-          }
-        
-          .crimes-table th,
-          .crimes-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-          }
-        
-          .crimes-table th {
-            background-color: #f8f9fa;
-            font-weight: bold;
-          }
-        
-          .crimes-table tr:nth-child(even) {
-            background-color: #f9f9f9;
-          }
-        
-          .crimes-table tr:hover {
-            background-color: #f5f5f5;
-          }
-        </style>
-        
-        <table class="crimes-table">
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Description</th>
-              <th>Ubication</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let crime of paginatedCrimes">
-              <td>{{crime.date | date:'dd/MM/yyyy'}}</td>
-              <td>{{crime.crime_description}}</td>
-              <td>{{crime.latitude}}, {{crime.longitude}}</td>
-            </tr>
-          </tbody>
-        </table>
-        
-        <div class="flex justify-center gap-4 items-center mt-4">
-          <button 
-            class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300" 
-            [disabled]="currentPage === 1"
-            (click)="prevPage()">
-            Previous
-          </button>
-          <span>Page {{currentPage}} of {{totalPages}}</span>
-          <button 
-            class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
-            [disabled]="currentPage === totalPages"
-            (click)="nextPage()">
-            Next
-          </button>
+    <div class="chart-container">
+      <div class="chart-header">
+        <div class="chart-title">
+          <h5>Crime per month</h5>
         </div>
+      </div>
+      @if (isLoadingBar) {
+        <div class="loading-spinner">
+          <mat-progress-spinner
+          color="primary"
+          mode="indeterminate"
+          diameter="50">>
+        </mat-progress-spinner>
+        </div>
+      }
+      <!-- Chart Section -->
+      <div class="chart-content">
+        <div id="bar-chart" class="chartBar"></div>
+      </div>
+
+      <!-- Footer -->
+      <div class="dropdown">
+        <button
+          class="dropdown-button"
+          (click)="toggleDropdown('bar')"
+          type="button">
+          Year {{ yearBarSelected}}
+          <svg class="dropdown-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l4 4 4-4" />
+          </svg>
+        </button>
+
+        <div
+          id="lastDaysdropdown"
+          class="dropdown-menu"
+          [class.hidden]="!isDropdownVisibleBar">
+          <ul>
+            @for (item of menuYear; track $index) {
+              <li (click)="updateChart(item, 'bar')">{{ item }}</li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="chart-container line">
+    <!-- Header -->
+    <div class="chart-header">
+      <div class="chart-title">
+          <h5>Tendence per month</h5>
+        </div>
+    </div>
+
+    <!-- Chart Area -->
+    @if (isLoadingLine) {
+      <div class="loading-spinner">
+        <mat-progress-spinner
+        color="primary"
+        mode="indeterminate"
+        diameter="50">>
+      </mat-progress-spinner>
+      </div>
+    }
+    <div id="area-chart" class="chartLine"></div>
+
+    <!-- Footer -->
+    <div class="dropdown">
+      <button
+        class="dropdown-button"
+        (click)="toggleDropdown('line')"
+        type="button">
+        Year {{ yearLineSelected }}
+        <svg class="dropdown-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1l4 4 4-4" />
+        </svg>
+      </button>
+
+      <div
+        id="lastDaysdropdown"
+        class="dropdown-menu"
+        [class.hidden]="!isDropdownVisibleLine">
+        <ul>
+          @for (item of menuYear; track $index) {
+            <li (click)="updateChart(item, 'line')">{{ item }}</li>
+          }
+        </ul>
       </div>
     </div>
   </div>
