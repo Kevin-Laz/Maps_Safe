@@ -21,15 +21,15 @@ export class SideBarComponent {
   listSections = [
     {'icon': 'manage_search',
       'link': '/',
-      'name': 'Inicio'
+      'name': 'Home'
     },
     {'icon': 'history',
       'link': '/historial',
-      'name': 'Historial'
+      'name': 'History'
     },
     {'icon': 'analytics',
       'link': '/graficos',
-      'name': 'Graficos'
+      'name': 'Charts'
     }
   ];
 
