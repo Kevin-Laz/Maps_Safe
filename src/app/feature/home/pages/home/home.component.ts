@@ -10,7 +10,7 @@ import { SearchContainerComponent } from "../../components/search-container/sear
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [MapsComponent, GoogleMapsModule, ModalRegisterComponent, FormsModule, SearchContainerComponent],
+  imports: [MapsComponent, GoogleMapsModule, FormsModule, SearchContainerComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   changeDetection: ChangeDetectionStrategy.Default,
@@ -91,7 +91,5 @@ export default class HomeComponent implements AfterViewInit{
     if (this.searchHistory.length > 5) {
         this.searchHistory.pop();
     }
-
-    console.log('Historial actualizado:', this.searchHistory);
   }
 }
