@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { GeocodingService } from '../../../../shared/services/geocoding/geocoding.service';
 import { GoogleMapsService } from '../../../../shared/services/google-maps/google-maps.service';
 import { SearchContainerComponent } from "../../components/search-container/search-container.component";
+import { RouteComplete, RouteCoordinatesNames } from '../../../../data/models/route';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +21,7 @@ export default class HomeComponent implements AfterViewInit{
   destination:string = '';
   originCoordinates: google.maps.LatLngLiteral | null = null;
   destinationCoordinates: google.maps.LatLngLiteral | null = null;
-  searchHistory: { origin: string; destination: string; duration: string; safe: number }[] = []; // Historial
+  searchHistory: RouteComplete[] = []; // Historial
   @ViewChild('originInput') originInput!: ElementRef;
   @ViewChild('destinationInput') destinationInput!: ElementRef;
 
@@ -73,20 +74,29 @@ export default class HomeComponent implements AfterViewInit{
     }
   }
 
-  async searchRoute(){
-    try {
-      this.originCoordinates = await this.geocodingService.geocodeAddress(this.origin);
-      this.destinationCoordinates = await this.geocodingService.geocodeAddress(this.destination);
-      // Forzar la detección de cambios
+  async searchRoute(coor?: RouteCoordinatesNames){
+    if(coor){
+      this.originCoordinates = coor.oLatLng;
+      this.destinationCoordinates = coor.dLatLng;
+      this.origin = coor.origin;
+      this.destination = coor.destination;
       this.cdr.detectChanges();
-    } catch (error) {
-      console.error(error);
     }
+    else{
+      try {
+        this.originCoordinates = await this.geocodingService.geocodeAddress(this.origin);
+        this.destinationCoordinates = await this.geocodingService.geocodeAddress(this.destination);
+        // Forzar la detección de cambios
+        this.cdr.detectChanges();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
   }
 
-  onRouteGenerated(routeData: { origin: string; destination: string; duration: string; safe: number }): void {
+  onRouteGenerated(routeData: RouteComplete): void {
     this.searchHistory.unshift(routeData);
-
     // Limitar el historial a las últimas 5 búsquedas
     if (this.searchHistory.length > 5) {
         this.searchHistory.pop();
