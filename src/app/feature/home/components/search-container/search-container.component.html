@@ -1,7 +1,7 @@
 <div class="search-history">
   <h3>Búsquedas recientes</h3>
   <ul>
-    <li *ngFor="let history of searchHistory">
+    <li (click)="onClicked(i)" *ngFor="let history of searchHistory; index as i">
       <div class="history-container">
         <div class="search-history_section">
           <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="10" fill="#0A8DC4" height="30" viewBox="0 0 718 1280">
