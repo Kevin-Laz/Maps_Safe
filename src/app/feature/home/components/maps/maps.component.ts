@@ -3,6 +3,7 @@ import { GoogleMapsService } from '../../../../shared/services/google-maps/googl
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
 import { HistoryService } from '../../../../shared/services/history/history.service';
+import { RouteComplete } from '../../../../data/models/route';
 
 @Component({
   selector: 'app-maps',
@@ -16,7 +17,7 @@ export class MapsComponent implements AfterViewInit, OnChanges {
   @Input() center: google.maps.LatLngLiteral = { lat: 34.03831, lng: -118.28353 };
   @Input() originCoordinates: google.maps.LatLngLiteral | null = null;
   @Input() destinationCoordinates: google.maps.LatLngLiteral | null = null;
-  @Output() routeGenerated = new EventEmitter<{ origin: string; destination: string; duration: string; safe: number }>();
+  @Output() routeGenerated = new EventEmitter<RouteComplete>();
   @ViewChild('map', { static: false }) mapContainer!: ElementRef;
   private map!: google.maps.Map;
   private heatmap!: google.maps.visualization.HeatmapLayer;
@@ -117,44 +118,58 @@ export class MapsComponent implements AfterViewInit, OnChanges {
 
     const origin = new google.maps.LatLng(this.originCoordinates.lat, this.originCoordinates.lng);
     const destination = new google.maps.LatLng(this.destinationCoordinates.lat, this.destinationCoordinates.lng);
-
+    const cacheKey = `S:${origin.lat(),origin.lng()},D:${destination.lat(),destination.lng()}`;
+    const cachedData = sessionStorage.getItem(cacheKey);
     if (this.originMarker) this.originMarker.map = null;
     if (this.destinationMarker) this.destinationMarker.map = null;
 
-    this.directionsService.route(
-      {
-        origin,
-        destination,
-        travelMode: google.maps.TravelMode.DRIVING,
-      },
-      async(response, status) => {
-        if (status === google.maps.DirectionsStatus.OK && response?.routes?.[0]?.legs?.[0]) {
-          this.directionsRenderer.setDirections(response);
-          // Obtén la duración del primer tramo de la ruta
-          const route = response.routes[0];
-          const leg = route.legs[0];
-          const duration = leg.duration?.text || 'N/A';
-          const tempsafe = Number((Math.random() * (1 - 0.79) + 0.79).toFixed(5));
-          // Registrar ruta en el historial
-          await this.registerRouteHistory({
-            origin: leg.start_address || 'Unknown Origin',
-            destination: leg.end_address || 'Unknown Destination',
-            securityLevel: tempsafe, // Nivel de seguridad simulado
-            routeData: response,
-          });
-
-          // Emite el evento con la información de la ruta
-          this.routeGenerated.emit({
-            origin: leg.start_address || 'Unknown Origin',
-            destination: leg.end_address || 'Unknown Destination',
-            duration: duration,
-            safe: tempsafe
-          });
-        } else {
-          console.error('Directions request failed due to ' + status);
-        }
+    if(cachedData){
+      try {
+        this.directionsRenderer.setDirections(JSON.parse(cachedData));
+      } catch (error) {
+        console.warn('Error setting directions from cache:', error);
       }
-    );
+    }
+    else{
+      this.directionsService.route(
+        {
+          origin,
+          destination,
+          travelMode: google.maps.TravelMode.DRIVING,
+        },
+        async(response, status) => {
+          if (status === google.maps.DirectionsStatus.OK && response?.routes?.[0]?.legs?.[0]) {
+            this.directionsRenderer.setDirections(response);
+            // Obtén la duración del primer tramo de la ruta
+            const route = response.routes[0];
+            const leg = route.legs[0];
+            const duration = leg.duration?.text || 'N/A';
+            const tempsafe = Number((Math.random() * (1 - 0.79) + 0.79).toFixed(5));
+            // Registrar ruta en el historial
+            await this.registerRouteHistory({
+              origin: leg.start_address || 'Unknown Origin',
+              destination: leg.end_address || 'Unknown Destination',
+              securityLevel: tempsafe, // Nivel de seguridad simulado
+              routeData: response,
+            });
+            if(new Blob([JSON.stringify(response)]).size < 200000){
+              this.addToSessionStorage(cacheKey,JSON.stringify(response),5)
+            }
+            // Emite el evento con la información de la ruta
+            this.routeGenerated.emit({
+              origin: leg.start_address || 'Unknown Origin',
+              destination: leg.end_address || 'Unknown Destination',
+              duration: duration,
+              safe: tempsafe,
+              oLatLng: this.originCoordinates,
+              dLatLng: this.destinationCoordinates
+            });
+          } else {
+            console.error('Directions request failed due to ' + status);
+          }
+        }
+      );
+    }
   }
 
   private async addHeatmapLayer(): Promise<void> {
@@ -263,7 +278,26 @@ export class MapsComponent implements AfterViewInit, OnChanges {
   }
 
 
+  // Función para agregar un elemento a sessionStorage
+  private addToSessionStorage(cacheKey: string, data: any, MAX_ITEMS: number) {
+    /* EN PROCESO DE IMPLEMENTACIÓN
+    // Obtén la lista de claves almacenadas en sessionStorage
+    let keys = JSON.parse(sessionStorage.getItem('cacheKeys') || '[]');
 
+    // Si ya hay 5 elementos, elimina el más antiguo
+    if (keys.length >= MAX_ITEMS) {
+        const oldestKey = keys.shift(); // Quita el primer elemento
+        sessionStorage.removeItem(oldestKey); // Elimina la clave más antigua
+    }
+
+    // Agrega el nuevo elemento
+    sessionStorage.setItem(cacheKey, JSON.stringify(data));
+
+    // Agrega la nueva clave a la lista y actualiza en sessionStorage
+    keys.push(cacheKey);
+    sessionStorage.setItem('cacheKeys', JSON.stringify(keys));
+    */
+  }
 
 
 
