@@ -1,14 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter, OnInit, WritableSignal, signal, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../../../../shared/services/auth/auth.service';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 @Component({
   selector: 'app-modal-login',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIcon, FormsModule],
+  imports: [CommonModule, MatButtonModule, MatIcon, FormsModule, MatProgressSpinner],
   templateUrl: './modal-login.component.html',
   styleUrl: './modal-login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -21,12 +22,17 @@ export class ModalLoginComponent implements OnInit{
   textPassword:string = '';
   OnSubmitted:boolean = false;
   errorMessage: string = '';
-  isAuthenticated: boolean = false; // Estado de autenticación
+  isAuthenticated: WritableSignal<boolean> = signal(false); // Estado de autenticación
+  isLoading: boolean = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) {
+    effect(()=>{
+      this.updateAuthStatus();
+    })
+  }
 
   ngOnInit(): void {
-    this.updateAuthStatus();
+
   }
 
   private updateAuthStatus(): void {
@@ -42,13 +48,15 @@ export class ModalLoginComponent implements OnInit{
   onLogin(loginForm: NgForm){
     this.OnSubmitted = true;
     if(!loginForm.invalid){
+      this.isLoading = true;
       this.authService.login(this.textUser, this.textPassword).subscribe((success) => {
       if (success) {
         this.changeToggleModel();
         this.updateAuthStatus();
-        console.log("Inicio de sesion exitoso")
+        this.isLoading = false;
         } else {
           this.errorMessage = 'Usuario o contraseña incorrectos';
+          this.isLoading = false;
           }
       });
     }
@@ -58,7 +66,6 @@ export class ModalLoginComponent implements OnInit{
     this.authService.logout(); // Cierra sesión
     this.updateAuthStatus(); // Actualiza el estado de autenticación
     this.changeToggleModel(); // Cierra el modal
-    console.log('Sesión cerrada');
   }
 
   onRegisterRedirect(){

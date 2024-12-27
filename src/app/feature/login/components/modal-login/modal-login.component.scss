@@ -1,10 +1,23 @@
 @import 'settings';
 @import 'mixins';
 
+.loading-spinner{
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center; /* Centrado horizontal */
+  align-items: center;     /* Centrado vertical */
+}
+
+.isLogin{
+  height: 200px !important;
+}
+
 .login-modal {
   background-color: #fff; /* Fondo blanco */
   padding: 20px;
   width: 200px;
+  height: 360px;
   border-radius: 8px; /* Bordes redondeados */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
   position: absolute; /* Aseguramos que pueda flotar */
