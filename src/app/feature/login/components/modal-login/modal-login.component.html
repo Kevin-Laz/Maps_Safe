@@ -1,32 +1,43 @@
-<div id="login-modal" *ngIf="toggleModal" class="login-modal">
-  <h2 class="colorize_blue" *ngIf="!isAuthenticated">Iniciar Sesión</h2>
-  <h2 class="colorize_green" *ngIf="isAuthenticated">Bienvenido</h2>
+<div id="login-modal" *ngIf="toggleModal" class="login-modal" [ngClass]="{'isLogin':isAuthenticated()}">
+  <div *ngIf="!isLoading">
+    <h2 class="colorize_blue" *ngIf="!isAuthenticated()">Iniciar Sesión</h2>
+    <h2 class="colorize_green" *ngIf="isAuthenticated()">Bienvenido</h2>
 
-  <!-- Formulario de inicio de sesión -->
-  <form *ngIf="!isAuthenticated" id="form-login" #loginForm="ngForm" (ngSubmit)="onLogin(loginForm)" novalidate>
-    <div class="form-group">
-      <label for="input-user" class="colorize_red">Usuario <span id="error-username" class="colorize" *ngIf="username.invalid && OnSubmitted">(Campo requerido)</span></label>
-      <input id="input-user" name="username" [(ngModel)]="textUser" type="text" placeholder="Introduce tu usuario" required #username="ngModel">
-    </div>
-    <div class="form-group">
-      <label for="input-password" class="colorize_red">Contraseña <span id="error-password" class="colorize" *ngIf="password.invalid && OnSubmitted">(Campo requerido)</span></label>
-      <input id="input-password" name="password" [(ngModel)]="textPassword" type="password" placeholder="Introduce tu contraseña" required #password="ngModel">
-    </div>
-    <button id="login-button" type="submit">Ingresar</button>
-  </form>
+    <!-- Formulario de inicio de sesión -->
+    <form *ngIf="!isAuthenticated()" id="form-login" #loginForm="ngForm" (ngSubmit)="onLogin(loginForm)" novalidate>
+      <div class="form-group">
+        <label for="input-user" class="colorize_red">Usuario <span id="error-username" class="colorize" *ngIf="username.invalid && OnSubmitted">(Campo requerido)</span></label>
+        <input id="input-user" name="username" [(ngModel)]="textUser" type="text" placeholder="Introduce tu usuario" required #username="ngModel">
+      </div>
+      <div class="form-group">
+        <label for="input-password" class="colorize_red">Contraseña <span id="error-password" class="colorize" *ngIf="password.invalid && OnSubmitted">(Campo requerido)</span></label>
+        <input id="input-password" name="password" [(ngModel)]="textPassword" type="password" placeholder="Introduce tu contraseña" required #password="ngModel">
+      </div>
+      <button id="login-button" type="submit">Ingresar</button>
+    </form>
 
-  <!-- Botón de cerrar sesión -->
-  <div *ngIf="isAuthenticated" class="logout-container">
-    <p>Has iniciado sesión correctamente</p>
-    <button id="logout-button" type="button" (click)="logout()">Cerrar Sesión</button>
+    <!-- Botón de cerrar sesión -->
+    <div *ngIf="isAuthenticated()" class="logout-container">
+      <p>Has iniciado sesión correctamente</p>
+      <button id="logout-button" type="button" (click)="logout()">Cerrar Sesión</button>
+    </div>
+
+    <div *ngIf="!isAuthenticated()" class="signup-section">
+      <p class="signup-text">¿No tienes una cuenta? <span  class="signup-link" (click)="onRegisterRedirect()">Créala aquí</span>.</p>
+    </div>
+
+    <!-- Botón de cerrar modal -->
+    <button id="exit-button" mat-fab class="button-close" (click)="changeToggleModel()">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
 
-  <div *ngIf="!isAuthenticated" class="signup-section">
-    <p class="signup-text">¿No tienes una cuenta? <span  class="signup-link" (click)="onRegisterRedirect()">Créala aquí</span>.</p>
+  <!-- Mostrar un spinner mientras se cargan los datos -->
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-progress-spinner
+    color="primary"
+    mode="indeterminate"
+    diameter="50">>
+  </mat-progress-spinner>
   </div>
-
-  <!-- Botón de cerrar modal -->
-  <button id="exit-button" mat-fab class="button-close" (click)="changeToggleModel()">
-    <mat-icon>close</mat-icon>
-  </button>
 </div>
