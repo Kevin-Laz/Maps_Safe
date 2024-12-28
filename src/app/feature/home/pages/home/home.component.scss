@@ -1,7 +1,7 @@
 @import 'mixins';
 .c-home{
   position: relative;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 50px);
   width: 100%;
   .map-container {
     flex-grow: 1;
@@ -28,6 +28,41 @@
     }
   }
 
+  .content-busqueda-movil{
+    margin-left: 32px;
+    margin-right: 32px;
+    position: absolute;
+    width: 75%;
+    z-index: 20;
+    img{
+      margin-left: -7px;
+    }
+    @include md(){
+      display: none;
+    }
+  }
+
+  .search-history_section{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    .route {
+      width: 100%;
+      min-width: 0;
+      font-size: 0.8rem;
+      color: #616572;
+      padding: 8px;
+      border-bottom-left-radius: 8px;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
+    svg{
+      width: 10px; /* Tamaño fijo */
+      height: 30px; /* Tamaño fijo */
+      flex-shrink: 0; /* Evita que Flexbox los reduzca */
+    }
+
+  }
 }
 
 .input-group {
@@ -45,15 +80,21 @@ input {
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
-  background-color: transparent;
+  background-color: #e2e9ff;
   border-radius: 8px;
   border-style: solid;
   border-width: 1px;
   border-color: #c2cbe5;
+  color: black;
+  font-weight: bold;
   &:focus{
     border: 1px solid #3798c2 !important;
     outline: none;
-
+  }
+  @include md(){
+    background-color: transparent;
+    font-weight: 300;
+    color: #616572;
   }
 }
 

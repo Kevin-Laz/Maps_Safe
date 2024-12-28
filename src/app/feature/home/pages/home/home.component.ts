@@ -24,9 +24,13 @@ export default class HomeComponent implements AfterViewInit{
   searchHistory: RouteComplete[] = []; // Historial
   @ViewChild('originInput') originInput!: ElementRef;
   @ViewChild('destinationInput') destinationInput!: ElementRef;
+  @ViewChild('originInputMovil') originInputM!: ElementRef;
+  @ViewChild('destinationInputMovil') destinationInputM!: ElementRef;
 
   private originAutocomplete!: google.maps.places.Autocomplete;
   private destinationAutocomplete!: google.maps.places.Autocomplete;
+  private originAutocompleteM!: google.maps.places.Autocomplete;
+  private destinationAutocompleteM!: google.maps.places.Autocomplete;
 
   constructor(private geocodingService: GeocodingService, private cdr: ChangeDetectorRef, private googleMapsService: GoogleMapsService){}
 
@@ -35,14 +39,11 @@ export default class HomeComponent implements AfterViewInit{
       // Espera a que la API de Google Maps esté completamente cargada
       await this.googleMapsService.loadApi();
 
-      // Inicializar Autocomplete en los campos de entrada
-      this.originAutocomplete = new google.maps.places.Autocomplete(this.originInput.nativeElement, {
-
-      });
-
-      this.destinationAutocomplete = new google.maps.places.Autocomplete(this.destinationInput.nativeElement, {
-
-      });
+      // Inicializar Autocomplete en los campos de entrada detectados
+      this.originAutocomplete = new google.maps.places.Autocomplete(this.originInput.nativeElement, {});
+      this.destinationAutocomplete = new google.maps.places.Autocomplete(this.destinationInput.nativeElement, {});
+      this.originAutocompleteM = new google.maps.places.Autocomplete(this.originInputM.nativeElement, {});
+      this.destinationAutocompleteM = new google.maps.places.Autocomplete(this.destinationInputM.nativeElement, {});
 
       // Escuchar cambios en Autocomplete para obtener el lugar seleccionado
       this.originAutocomplete.addListener('place_changed', () => {
@@ -59,6 +60,31 @@ export default class HomeComponent implements AfterViewInit{
 
       this.destinationAutocomplete.addListener('place_changed', () => {
         const place = this.destinationAutocomplete.getPlace();
+        if (place.geometry && place.geometry.location) {
+          this.destination = place.formatted_address || '';
+          this.destinationCoordinates = {
+            lat: place.geometry.location.lat(),
+            lng: place.geometry.location.lng(),
+          };
+          this.cdr.detectChanges();
+        }
+      });
+
+      // Escuchar cambios en Autocomplete para obtener el lugar seleccionado
+      this.originAutocompleteM.addListener('place_changed', () => {
+        const place = this.originAutocompleteM.getPlace();
+        if (place.geometry && place.geometry.location) {
+          this.origin = place.formatted_address || '';
+          this.originCoordinates = {
+            lat: place.geometry.location.lat(),
+            lng: place.geometry.location.lng(),
+          };
+          this.cdr.detectChanges();
+        }
+      });
+
+      this.destinationAutocompleteM.addListener('place_changed', () => {
+        const place = this.destinationAutocompleteM.getPlace();
         if (place.geometry && place.geometry.location) {
           this.destination = place.formatted_address || '';
           this.destinationCoordinates = {
@@ -92,7 +118,6 @@ export default class HomeComponent implements AfterViewInit{
         console.error(error);
       }
     }
-
   }
 
   onRouteGenerated(routeData: RouteComplete): void {
