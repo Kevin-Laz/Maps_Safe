@@ -29,6 +29,7 @@
   }
 
   .content-busqueda-movil{
+    margin-top: 16px;
     margin-left: 32px;
     margin-right: 32px;
     position: absolute;
@@ -56,12 +57,6 @@
       border-top-right-radius: 8px;
       border-bottom-right-radius: 8px;
     }
-    svg{
-      width: 10px; /* Tamaño fijo */
-      height: 30px; /* Tamaño fijo */
-      flex-shrink: 0; /* Evita que Flexbox los reduzca */
-    }
-
   }
 }
 
@@ -80,13 +75,12 @@ input {
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
-  background-color: #e2e9ff;
+  background-color: #fff;
   border-radius: 8px;
   border-style: solid;
   border-width: 1px;
   border-color: #c2cbe5;
   color: black;
-  font-weight: bold;
   &:focus{
     border: 1px solid #3798c2 !important;
     outline: none;
@@ -111,3 +105,35 @@ button:hover {
   background-color: $border-color;
 }
 
+.input-with-icon {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.input-with-icon input {
+  width: 100%;
+  padding-left: 40px; /* Espacio para el ícono */
+  height: 40px;
+  box-sizing: border-box;
+}
+
+.input-with-icon .input-icon {
+  position: absolute;
+  top: 50%;
+  left: 10px; /* Alineado interno del ícono */
+  transform: translateY(-50%);
+  pointer-events: none; /* Evita que el ícono interfiera con el foco */
+  width: 10px; /* Tamaño fijo */
+  height: 30px; /* Tamaño fijo */
+  flex-shrink: 0; /* Evita que Flexbox los reduzca */
+}
+
+.login-icon{
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  right: 15px;
+  top: 6px;
+  cursor: pointer;
+}
