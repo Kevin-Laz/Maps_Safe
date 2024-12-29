@@ -1,14 +1,38 @@
 .container-main-chart{
   overflow-y: auto;
+  overflow-x: hidden;
   height: 100vh;
+  padding-bottom: 50px;
+  @media (min-width: 768px) {
+    padding-bottom: 0px;
+    margin-left: 8px;
+    padding-right: 8px;
+  }
+}
+.group-chart{
+  display: block;
+  column-gap: 8px;
+  margin-bottom: 8px;
+  max-width: 99%;
+  @media (min-width: 1024px) {
+    display: flex;
+  }
+}
+.pai{
+  max-width: 100%;
+  @media (min-width: 1024px) {
+    max-width: 450px;
+  }
 }
 .chart-container {
-  max-width: 400px;
+  height: 542px;
   width: 100%;
   background: #ffffff;
   border-radius: 0.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 1rem;
+  overflow: hidden;
+
 
   .chart-header {
     display: flex;
@@ -81,6 +105,9 @@
 .chartLine{
   min-height: 226px !important;
 }
+.chartBar{
+  min-height: 452px !important;
+}
 
 .dropdown {
   position: relative;
@@ -145,3 +172,18 @@
     }
   }
 }
+
+.chart-content{
+  max-width: 99%;
+}
+.line{
+  max-width: 99%;
+  height: 320px !important;
+}
+.loading-spinner{
+  display: flex;
+  justify-content: center; /* Centrado horizontal */
+  align-items: center;     /* Centrado vertical */
+  height: calc(100% - 32px);
+}
+

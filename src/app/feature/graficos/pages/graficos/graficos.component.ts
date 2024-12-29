@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angula
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CrimeSummaryService } from './services/crime-summary/crime-summary.service';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 declare const ApexCharts: any;
 
 
@@ -12,7 +13,8 @@ declare const ApexCharts: any;
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './graficos.component.html',
   styleUrls: ['./graficos.component.scss']
@@ -22,10 +24,15 @@ export default class GraficosComponent implements OnInit {
   // Control de visibilidad de dropdowns
   chartInstanceLine: any | null = null;
   chartInstancePie: any | null = null;
+  chartInstanceBar: any | null = null;
 
+  isLoadingPie = true;
+  isLoadingBar = true;
+  isLoadingLine = true;
 
   isDropdownVisibleLine = false;
   isDropdownVisiblePie = false;
+  isDropdownVisibleBar = false;
   menuYear: number[] = [2020,2021,2022,2023,2024];
   monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -33,24 +40,30 @@ export default class GraficosComponent implements OnInit {
   ];
   yearLineSelected = this.menuYear[0];
   yearPaiSelected = this.menuYear[0];
+  yearBarSelected = this.menuYear[0];
 
   constructor(private crimeSummary: CrimeSummaryService) {}
 
   ngOnInit(): void {
     this.loadPieChart(2020);
     this.loadAreaChart(2020);
+    this.loadBarChart(2020);
   }
 
   // Métodos para alternar dropdowns
-  toggleDropdown(type: 'line' | 'pie'): void {
+  toggleDropdown(type: 'line' | 'pie' | 'bar'): void {
     if (type === 'line') {
       this.isDropdownVisibleLine = !this.isDropdownVisibleLine;
-    } else {
+    }
+    else if (type === 'pie') {
       this.isDropdownVisiblePie = !this.isDropdownVisiblePie;
+    }
+    else{
+      this.isDropdownVisibleBar = !this.isDropdownVisibleBar;
     }
   }
 
-  updateChart(year: number, type: 'line' | 'pie'){
+  updateChart(year: number, type: 'line' | 'pie' | 'bar'){
     if(type == 'line'){
       this.yearLineSelected = year;
       this.loadAreaChart(this.yearLineSelected);
@@ -62,6 +75,12 @@ export default class GraficosComponent implements OnInit {
       this.toggleDropdown('pie');
     }
 
+    if(type == 'bar'){
+      this.yearBarSelected = year;
+      this.loadBarChart(this.yearBarSelected);
+      this.toggleDropdown('bar');
+    }
+
   }
 
   // Cargar el gráfico de área
@@ -69,6 +88,7 @@ export default class GraficosComponent implements OnInit {
     // Destruir el gráfico anterior si existe
   if (this.chartInstanceLine) {
     this.chartInstanceLine.destroy();
+    this.isLoadingLine = true;
   }
     this.crimeSummary.getCrimeSummary(year, 'line').subscribe({
       next: (data) => {
@@ -78,6 +98,7 @@ export default class GraficosComponent implements OnInit {
         );
         this.chartInstanceLine = new ApexCharts(document.getElementById('area-chart'), chartOptions);
         this.chartInstanceLine.render();
+        this.isLoadingLine = false;
       },
       error: (err) => {
         console.error('Error al cargar el gráfico de área:', err);
@@ -89,6 +110,7 @@ export default class GraficosComponent implements OnInit {
   private loadPieChart(year: number): void {
     if(this.chartInstancePie){
       this.chartInstancePie.destroy();
+      this.isLoadingPie = true;
     }
     this.crimeSummary.getCrimeSummary(year, 'pie').subscribe({
       next: (data) => {
@@ -96,12 +118,36 @@ export default class GraficosComponent implements OnInit {
         const chartOptions = this.getPieChartOptions(groupedData.labels, groupedData.series);
         this.chartInstancePie = new ApexCharts(document.getElementById('pie-chart'), chartOptions);
         this.chartInstancePie.render();
+        this.isLoadingPie = false;
       },
       error: (err) => {
         console.error('Error al cargar el gráfico de pastel:', err);
       }
     });
   }
+
+  private loadBarChart(year: number): void {
+      // Destruir el gráfico anterior si existe
+  if (this.chartInstanceBar) {
+    this.chartInstanceBar.destroy();
+    this.isLoadingBar = true;
+  }
+    this.crimeSummary.getCrimeSummary(year, 'bar').subscribe({
+      next: (data) => {
+        const chartOptions = this.getBarOptions(
+          data.map((item) => this.monthNames[item.mes-1]),
+          data.map((item) => item.cantidad)
+        );
+        this.chartInstanceBar = new ApexCharts(document.getElementById('bar-chart'), chartOptions);
+        this.chartInstanceBar.render();
+        this.isLoadingBar = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar el gráfico de barras:', err);
+      }
+    });
+  }
+
 
   // Opciones para el gráfico de línea
   private getLineChartOptions(categories: string[], seriesData: number[]): any {
@@ -163,6 +209,81 @@ export default class GraficosComponent implements OnInit {
       dataLabels: { enabled: true, style: { fontFamily: 'Inter, sans-serif' } },
       legend: { position: 'bottom', fontFamily: 'Inter, sans-serif' }
     };
+  }
+
+  private getBarOptions(labels: string[], series: number[]): any{
+    return {
+      series: [
+        {
+          name: 'Crimes',
+          data: series
+        }
+      ],
+      chart: {
+        type: 'bar',
+        height: 452,
+        toolbar: {
+          show: false
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      colors: ['#020617'],
+      plotOptions: {
+        bar: {
+          columnWidth: '40%',
+          borderRadius: 2
+        }
+      },
+      xaxis: {
+        axisTicks: {
+          show: false
+        },
+        axisBorder: {
+          show: false
+        },
+        labels: {
+          style: {
+            colors: '#616161',
+            fontSize: '12px',
+            fontFamily: 'inherit',
+            fontWeight: 400
+          }
+        },
+        categories: labels
+      },
+      yaxis: {
+        labels: {
+          style: {
+            colors: '#616161',
+            fontSize: '12px',
+            fontFamily: 'inherit',
+            fontWeight: 400
+          }
+        }
+      },
+      grid: {
+        show: true,
+        borderColor: '#dddddd',
+        strokeDashArray: 5,
+        xaxis: {
+          lines: {
+            show: true
+          }
+        },
+        padding: {
+          top: 5,
+          right: 20
+        }
+      },
+      fill: {
+        opacity: 0.8
+      },
+      tooltip: {
+        theme: 'dark'
+      }
+    }
   }
 
   // Método para agrupar datos menores a un umbral
