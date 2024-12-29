@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal, WritableSignal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
@@ -9,7 +9,13 @@ import { map, catchError } from 'rxjs/operators';
 export class AuthService {
   private apiUrl = 'https://api-maps-safe.onrender.com'; // URL base del backend
   private tokenKey = 'access_token';
-  constructor(private http: HttpClient) { }
+  private isLogin = signal(false);
+  constructor(private http: HttpClient) {
+    const token = localStorage.getItem(this.tokenKey);
+    if(token){
+      this.isLogin.set(true);
+    }
+  }
 
 
   login(username: string, password: string): Observable<boolean> {
@@ -26,10 +32,12 @@ export class AuthService {
       .pipe(
         map((response) => {
           localStorage.setItem(this.tokenKey, response.access_token); // Almacena el token
+          this.isLogin.set(true);
           return true;
         }),
         catchError((error) => {
           console.error('Error en login:', error);
+          this.isLogin.set(false);
           return of(false);
         })
       );
@@ -45,7 +53,7 @@ export class AuthService {
         map(() => true),
         catchError((error) => {
           console.error('Error en registro:', error);
-          return of(false);
+          throw new Error(error?.error?.message || 'Error desconocido al registrarse.');
         })
       );
   }
@@ -54,8 +62,8 @@ export class AuthService {
   /**
    * Verifica si el usuario está autenticado
    */
-  isAuthenticated(): boolean {
-    return !!localStorage.getItem(this.tokenKey);
+  isAuthenticated(): WritableSignal<boolean> {
+    return this.isLogin;
   }
 
   /**
@@ -70,5 +78,8 @@ export class AuthService {
    */
   logout(): void {
     localStorage.removeItem(this.tokenKey);
+    this.isLogin.set(false);
   }
 }
+
+
