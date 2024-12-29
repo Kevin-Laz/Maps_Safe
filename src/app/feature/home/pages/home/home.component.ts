@@ -7,16 +7,19 @@ import { GeocodingService } from '../../../../shared/services/geocoding/geocodin
 import { GoogleMapsService } from '../../../../shared/services/google-maps/google-maps.service';
 import { SearchContainerComponent } from "../../components/search-container/search-container.component";
 import { RouteComplete, RouteCoordinatesNames } from '../../../../data/models/route';
+import { ModalLoginComponent } from "../../../login/components/modal-login/modal-login.component";
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [MapsComponent, GoogleMapsModule, FormsModule, SearchContainerComponent],
+  imports: [MapsComponent, GoogleMapsModule, FormsModule, SearchContainerComponent, ModalLoginComponent, ModalRegisterComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   changeDetection: ChangeDetectionStrategy.Default,
 })
 export default class HomeComponent implements AfterViewInit{
+  activeLogin: boolean = false;
+  registerActive: boolean = false;
   origin:string = '';
   destination:string = '';
   originCoordinates: google.maps.LatLngLiteral | null = null;
@@ -126,5 +129,16 @@ export default class HomeComponent implements AfterViewInit{
     if (this.searchHistory.length > 5) {
         this.searchHistory.pop();
     }
+  }
+
+  toggleLogin(){
+    this.activeLogin = !this.activeLogin;
+    console.log(this.activeLogin);
+  }
+  redirectModalRegister(){
+    this.registerActive = true;
+  }
+  redirectModalLogin(){
+    this.registerActive = false;
   }
 }
