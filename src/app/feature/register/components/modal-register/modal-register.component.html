@@ -1,57 +1,67 @@
 <div id="register-modal" *ngIf="toggleRegister" class="register-modal">
-  <h2 class="colorize_blue">Crear Cuenta</h2>
-  <form id="form-register" #registerForm="ngForm" (ngSubmit)="onRegister(registerForm)" novalidate>
-    <div class="form-group">
-      <label for="input-email" class="colorize_blue">
-        Correo Electrónico
-        <span class="error" *ngIf="email.invalid && OnSubmitted">(Campo requerido)</span>
-      </label>
-      <input
-        id="input-email"
-        name="email"
-        [(ngModel)]="textEmail"
-        type="email"
-        placeholder="Introduce tu correo electrónico"
-        required
-        #email="ngModel">
+  <div *ngIf="!isLoading()">
+    <h2 class="colorize_blue">Crear Cuenta</h2>
+    <form id="form-register" #registerForm="ngForm" (ngSubmit)="onRegister(registerForm)" novalidate>
+      <div class="form-group">
+        <label for="input-email" class="colorize_blue">
+          Correo Electrónico
+          <span class="error" *ngIf="email.invalid && OnSubmitted">(Campo requerido)</span>
+        </label>
+        <input
+          id="input-email"
+          name="email"
+          [(ngModel)]="textEmail"
+          type="email"
+          placeholder="Introduce tu correo electrónico"
+          required
+          #email="ngModel">
+      </div>
+      <div class="form-group">
+        <label for="input-password" class="colorize_blue">
+          Contraseña
+          <span class="error" *ngIf="password.invalid && OnSubmitted">(Campo requerido)</span>
+        </label>
+        <input
+          id="input-password"
+          name="password"
+          [(ngModel)]="textPassword"
+          type="password"
+          placeholder="Crea una contraseña"
+          required
+          #password="ngModel">
+      </div>
+      <div class="form-group">
+        <label for="input-confirm-password" class="colorize_blue">
+          Confirmar Contraseña
+          <span class="error" *ngIf="confirmPassword.invalid && OnSubmitted">(Campo requerido)</span>
+        </label>
+        <input
+          id="input-confirm-password"
+          name="confirmPassword"
+          [(ngModel)]="textConfirmPassword"
+          type="password"
+          placeholder="Repite tu contraseña"
+          required
+          #confirmPassword="ngModel">
+      </div>
+      <button id="register-button" type="submit">Registrarme</button>
+    </form>
+    <div class="login-redirect">
+      <p class="login-text">¿Ya tienes una cuenta? <span (click)="onLoginRedirect()" class="login-link">Inicia sesión</span>.</p>
     </div>
-    <div class="form-group">
-      <label for="input-password" class="colorize_blue">
-        Contraseña
-        <span class="error" *ngIf="password.invalid && OnSubmitted">(Campo requerido)</span>
-      </label>
-      <input
-        id="input-password"
-        name="password"
-        [(ngModel)]="textPassword"
-        type="password"
-        placeholder="Crea una contraseña"
-        required
-        #password="ngModel">
-    </div>
-    <div class="form-group">
-      <label for="input-confirm-password" class="colorize_blue">
-        Confirmar Contraseña
-        <span class="error" *ngIf="confirmPassword.invalid && OnSubmitted">(Campo requerido)</span>
-      </label>
-      <input
-        id="input-confirm-password"
-        name="confirmPassword"
-        [(ngModel)]="textConfirmPassword"
-        type="password"
-        placeholder="Repite tu contraseña"
-        required
-        #confirmPassword="ngModel">
-    </div>
-    <button id="register-button" type="submit">Registrarme</button>
-  </form>
-  <div class="login-redirect">
-    <p class="login-text">¿Ya tienes una cuenta? <span (click)="onLoginRedirect()" class="login-link">Inicia sesión aquí</span>.</p>
+    <button id="exit-button" mat-fab class="button-close" (click)="changeToggleRegister()">
+      <mat-icon>close</mat-icon>
+    </button>
+    <p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
+    <p *ngIf="successMessage" style="color: blue;">{{ successMessage }}</p>
   </div>
-  <button id="exit-button" mat-fab class="button-close" (click)="changeToggleRegister()">
-    <mat-icon>close</mat-icon>
-  </button>
-  <p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
-  <p *ngIf="successMessage" style="color: blue;">{{ successMessage }}</p>
+  <!-- Mostrar un spinner mientras se cargan los datos -->
+  <div *ngIf="isLoading()" class="loading-spinner">
+    <mat-progress-spinner
+    color="primary"
+    mode="indeterminate"
+    diameter="50">>
+  </mat-progress-spinner>
+  </div>
 </div>
 
