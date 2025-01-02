@@ -1,7 +1,7 @@
 @import 'mixins';
 .c-home{
   position: relative;
-  height: calc(100vh - 50px);
+  height: calc(100dvh - 50px);
   width: 100%;
   .map-container {
     flex-grow: 1;
@@ -29,6 +29,8 @@
   }
 
   .content-busqueda-movil{
+    gap: 4px;
+    display: grid;
     margin-top: 16px;
     margin-left: 32px;
     margin-right: 32px;
