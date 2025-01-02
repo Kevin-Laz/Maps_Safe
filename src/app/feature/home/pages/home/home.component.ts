@@ -29,7 +29,10 @@ export default class HomeComponent implements AfterViewInit{
   @ViewChild('destinationInput') destinationInput!: ElementRef;
   @ViewChild('originInputMovil') originInputM!: ElementRef;
   @ViewChild('destinationInputMovil') destinationInputM!: ElementRef;
+<<<<<<< HEAD
   @ViewChild('loginIcon') loginIcon!: ElementRef;
+=======
+>>>>>>> origin/develop
 
   private originAutocomplete!: google.maps.places.Autocomplete;
   private destinationAutocomplete!: google.maps.places.Autocomplete;
