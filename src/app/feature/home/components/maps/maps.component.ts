@@ -126,6 +126,7 @@ export class MapsComponent implements AfterViewInit, OnChanges {
     if(cachedData){
       try {
         this.directionsRenderer.setDirections(JSON.parse(cachedData));
+        console.log("direction cache");
       } catch (error) {
         console.warn('Error setting directions from cache:', error);
       }
@@ -153,7 +154,7 @@ export class MapsComponent implements AfterViewInit, OnChanges {
               routeData: response,
             });
             if(new Blob([JSON.stringify(response)]).size < 200000){
-              this.addToSessionStorage(cacheKey,JSON.stringify(response),5)
+              this.addToSessionStorage(cacheKey,response,5)
             }
             // Emite el evento con la información de la ruta
             this.routeGenerated.emit({
@@ -280,7 +281,7 @@ export class MapsComponent implements AfterViewInit, OnChanges {
 
   // Función para agregar un elemento a sessionStorage
   private addToSessionStorage(cacheKey: string, data: any, MAX_ITEMS: number) {
-    /* EN PROCESO DE IMPLEMENTACIÓN
+
     // Obtén la lista de claves almacenadas en sessionStorage
     let keys = JSON.parse(sessionStorage.getItem('cacheKeys') || '[]');
 
@@ -296,7 +297,7 @@ export class MapsComponent implements AfterViewInit, OnChanges {
     // Agrega la nueva clave a la lista y actualiza en sessionStorage
     keys.push(cacheKey);
     sessionStorage.setItem('cacheKeys', JSON.stringify(keys));
-    */
+
   }
 
 
