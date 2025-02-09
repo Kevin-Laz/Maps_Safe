@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class NodesService {
-  private apiURL: string = 'http://api-maps-safe.onrender.com/nodes/';
+  private apiURL: string = 'https://api-maps-safe.onrender.com/nodes/';
   constructor(private http: HttpClient) { }
 
   getNodes(ltMin: number, ltMax: number, lnMin: number, lnMax: number): Observable<Node[]> {
