@@ -6,15 +6,15 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class NodesService {
-  private apiURL: string = 'http://api-maps-safe.onrender.com/nodes/';
+  private apiURL: string = 'https://api-maps-safe.onrender.com/nodes/';
   constructor(private http: HttpClient) { }
 
   getNodes(ltMin: number, ltMax: number, lnMin: number, lnMax: number): Observable<Node[]> {
     const params = new HttpParams()
-      .set('min_lat', ltMin.toString())
-      .set('max_lat', ltMax.toString())
-      .set('min_lon', lnMin.toString())
-      .set('max_lon', lnMax.toString());
+      .set('min_lat', ltMin.toFixed(6))
+      .set('max_lat', ltMax.toFixed(6))
+      .set('min_lon', lnMin.toFixed(6))
+      .set('max_lon', lnMax.toFixed(6));
 
     return this.http.get<Node[]>(this.apiURL, { params });
   }
