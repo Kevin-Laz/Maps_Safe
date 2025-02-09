@@ -11,8 +11,8 @@ export class AuthService {
   private tokenKey = 'access_token';
   private isLogin = signal(false);
   constructor(private http: HttpClient) {
-    const token = localStorage.getItem(this.tokenKey);
-    if(token){
+    const token = this.getToken();
+    if(token && this.isTokenValid(token)){
       this.isLogin.set(true);
     }
   }
@@ -63,6 +63,7 @@ export class AuthService {
    * Verifica si el usuario está autenticado
    */
   isAuthenticated(): WritableSignal<boolean> {
+    this.checkTokenValidity();
     return this.isLogin;
   }
 
@@ -71,6 +72,32 @@ export class AuthService {
    */
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
+  }
+
+  /**
+   * Verifica si el token es válido (no expirado).
+   */
+  isTokenValid(token: string): boolean {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const exp = payload.exp * 1000; // Convertir a milisegundos
+      return Date.now() < exp;
+    } catch (error) {
+      console.error('Error al verificar el token:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Valida el token y actualiza el estado de autenticación.
+   */
+  private checkTokenValidity(): void {
+    const token = this.getToken();
+    if (token && this.isTokenValid(token)) {
+      this.isLogin.set(true);
+    } else {
+      this.logout(); // Cierra sesión si el token es inválido
+    }
   }
 
   /**
