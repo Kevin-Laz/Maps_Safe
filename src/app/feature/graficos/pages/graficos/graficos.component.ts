@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CrimeSummaryService } from './services/crime-summary/crime-summary.service';
@@ -20,7 +20,7 @@ declare const ApexCharts: any;
   styleUrls: ['./graficos.component.scss']
 })
 
-export default class GraficosComponent implements OnInit {
+export default class GraficosComponent implements OnInit, OnDestroy {
   // Control de visibilidad de dropdowns
   chartInstanceLine: any | null = null;
   chartInstancePie: any | null = null;
@@ -43,6 +43,17 @@ export default class GraficosComponent implements OnInit {
   yearBarSelected = this.menuYear[0];
 
   constructor(private crimeSummary: CrimeSummaryService) {}
+  ngOnDestroy(): void {
+    if(this.chartInstancePie){
+      this.chartInstanceBar.destroy();
+    }
+    if(this.chartInstanceLine){
+      this.chartInstanceLine.destroy();
+    }
+    if(this.chartInstanceBar){
+      this.chartInstanceBar.destroy();
+    }
+  }
 
   ngOnInit(): void {
     this.loadPieChart(2020);

@@ -4,6 +4,9 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
 import { HistoryService } from '../../../../shared/services/history/history.service';
 import { RouteComplete } from '../../../../data/models/route';
+import { NodesService } from '../../services/nodes.service';
+import { debounceTime, Subject } from 'rxjs';
+import { AuthService } from '../../../../shared/services/auth/auth.service';
 
 @Component({
   selector: 'app-maps',
@@ -25,8 +28,11 @@ export class MapsComponent implements AfterViewInit, OnChanges {
   private destinationMarker!: any;
   private directionsService!: google.maps.DirectionsService;
   private directionsRenderer!: google.maps.DirectionsRenderer;
+  private heatMapData: google.maps.visualization.WeightedLocation[] = [];
+  private boundsChanged$ = new Subject<void>();
+  private currentRenderMap = {min_lat: 0, max_lat: 0, min_lon: 0, max_lon: 0};
 
-  constructor(private googleMapsService: GoogleMapsService, private http: HttpClient, private historyService: HistoryService){}
+  constructor(private googleMapsService: GoogleMapsService, private http: HttpClient, private historyService: HistoryService, private nodeService: NodesService, private authService: AuthService){}
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['originCoordinates'] || changes['destinationCoordinates']) {
       this.updateMarkers();
@@ -53,10 +59,11 @@ export class MapsComponent implements AfterViewInit, OnChanges {
 
     const { Map } = await google.maps.importLibrary('maps') as google.maps.MapsLibrary;
     const { AdvancedMarkerElement } = await google.maps.importLibrary('marker') as google.maps.MarkerLibrary;
-    //const mapContainer = document.getElementById('map') as HTMLElement;
     this.map = new Map(this.mapContainer.nativeElement, {
       center: this.center,
-      zoom: 15,
+      zoom: 16,
+      minZoom: 15,
+      maxZoom: 17,
       mapTypeId: 'roadmap',
       mapId: 'DEMO_MAP_ID',
       disableDefaultUI: true,
@@ -64,6 +71,27 @@ export class MapsComponent implements AfterViewInit, OnChanges {
       streetViewControl: false,
       fullscreenControl: true
     });
+
+    const bounds = this.map.getBounds();
+    if (bounds) {
+      const ne = bounds.getNorthEast();
+      const sw = bounds.getSouthWest();
+      this.currentRenderMap = {
+        min_lat: sw.lat(),
+        max_lat: ne.lat(),
+        min_lon: sw.lng(),
+        max_lon: ne.lng()
+      };
+    }
+
+    this.map.addListener('bounds_changed', ()=>{
+      this.boundsChanged$.next();
+    })
+
+    this.boundsChanged$.pipe(debounceTime(700)).subscribe(()=>{
+      this.addHeatmapLayer();
+    })
+
     this.directionsService = new google.maps.DirectionsService();
     this.directionsRenderer = new google.maps.DirectionsRenderer({
       map: this.map,
@@ -83,32 +111,19 @@ export class MapsComponent implements AfterViewInit, OnChanges {
 
     // Crear nuevo marcador para el origen si hay coordenadas
     if (this.originCoordinates) {
-      /*const customMarkerImg = document.createElement('img');
-      customMarkerImg.src = 'marcador.png';
-      customMarkerImg.style.width = '50px';
-      customMarkerImg.style.height = '50px';*/
-
       this.originMarker = new google.maps.marker.AdvancedMarkerElement({
         position: this.originCoordinates,
         map: this.map,
         title: 'Origen',
-        //content: customMarkerImg,
       });
-      this.map.setCenter(this.originCoordinates); // Centrar el mapa en el origen
+      this.map.setCenter(this.originCoordinates);
     }
 
-    // Crear nuevo marcador para el destino si hay coordenadas
     if (this.destinationCoordinates) {
-      /*const customMarkerImg = document.createElement('img');
-      customMarkerImg.src = 'marcador.png';
-      customMarkerImg.style.width = '50px';
-      customMarkerImg.style.height = '50px';*/
-
       this.destinationMarker = new google.maps.marker.AdvancedMarkerElement({
         position: this.destinationCoordinates,
         map: this.map,
         title: 'Destino',
-        //content: customMarkerImg,
       });
     }
   }
@@ -126,6 +141,7 @@ export class MapsComponent implements AfterViewInit, OnChanges {
     if(cachedData){
       try {
         this.directionsRenderer.setDirections(JSON.parse(cachedData));
+        console.log("direction cache");
       } catch (error) {
         console.warn('Error setting directions from cache:', error);
       }
@@ -153,7 +169,7 @@ export class MapsComponent implements AfterViewInit, OnChanges {
               routeData: response,
             });
             if(new Blob([JSON.stringify(response)]).size < 200000){
-              this.addToSessionStorage(cacheKey,JSON.stringify(response),5)
+              this.addToSessionStorage(cacheKey,response,5)
             }
             // Emite el evento con la información de la ruta
             this.routeGenerated.emit({
@@ -173,39 +189,66 @@ export class MapsComponent implements AfterViewInit, OnChanges {
   }
 
   private async addHeatmapLayer(): Promise<void> {
-    try {
-      const response = await fetch('https://api-maps-safe.onrender.com/nodes/');
-      if (!response.ok) {
-        throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
-      }
-      const nodes: [Node] = await response.json();
-      // Transforma los datos en puntos para el mapa de calor
-      const heatmapData = nodes.map((node: any) => ({
-        location: new google.maps.LatLng(node.latitude, node.longitude),
-        weight: node.risk, // Usa el nivel de riesgo como peso
-      }));
+    if (!this.map) return;
+    const bounds = this.map.getBounds();
+    if (!bounds) return;
+     // Obtener límites visibles en el mapa
+    const ne = bounds.getNorthEast();
+    const sw = bounds.getSouthWest();
 
-      const gradient = [
-        'rgba(57, 106, 255, 0)',  // Totalmente transparente (sin datos)
-        'rgba(57, 106, 255, 0.2)',  // Azul muy seguro (opacidad baja)
-        'rgba(57, 106, 255, 0.4)',  // Azul seguro
-        'rgba(10, 141, 196, 0.5)',  // Celeste seguro
-        'rgba(255, 255, 0, 0.5)',   // Amarillo neutral
-        'rgba(255, 165, 0, 0.6)',   // Naranja riesgoso
-        'rgba(255, 0, 0, 0.7)',     // Rojo muy riesgoso
-      ];
+    const minLat = sw.lat();
+    const maxLat = ne.lat();
+    const minLon = sw.lng();
+    const maxLon = ne.lng();
 
-      // Crea y añade la capa de Heatmap
-      this.heatmap = new google.maps.visualization.HeatmapLayer({
-        data: heatmapData,
-        gradient: gradient,
-        dissipating: true, // Ajusta el tamaño del área afectada por cada punto
-        radius: 35,
-        map: this.map,
-      });
-    } catch (error) {
-      console.error('Error al cargar los nodos para el mapa de calor: ', error);
+    const newRenderMap = {min_lat: minLat, max_lat: maxLat, min_lon: minLon, max_lon: maxLon};
+    // Verifica si el nuevo mapa está completamente dentro del mapa renderizado
+    const isInsideCurrentRender =
+    newRenderMap.min_lat >= this.currentRenderMap.min_lat &&
+    newRenderMap.max_lat <= this.currentRenderMap.max_lat &&
+    newRenderMap.min_lon >= this.currentRenderMap.min_lon &&
+    newRenderMap.max_lon <= this.currentRenderMap.max_lon;
+
+    if (isInsideCurrentRender) {
+    return; // No realiza la petición si ya está dentro del área renderizada
     }
+
+    this.nodeService.getNodes(minLat,maxLat,minLon,maxLon).subscribe({
+      next: (nodes)=>{
+        const newHeatMapData: google.maps.visualization.WeightedLocation[] = nodes.map((node: any) => ({
+          location: new google.maps.LatLng(node.latitude, node.longitude),
+          weight: node.risk, // Usa el nivel de riesgo como peso
+        }));
+        this.heatMapData = [...newHeatMapData, ...this.heatMapData].filter((node, index, all)=>{
+          return index === all.findIndex((n)=>{
+            return node.location?.lat === n.location?.lat && node.location?.lng === n.location?.lng;
+          })
+        });
+        if(this.heatmap){
+          this.heatmap.setData(this.heatMapData);
+        }
+        else {
+          this.heatmap = new google.maps.visualization.HeatmapLayer({
+            data: this.heatMapData,
+            gradient: [
+              'rgba(57, 106, 255, 0)',
+              'rgba(57, 106, 255, 0.2)',
+              'rgba(57, 106, 255, 0.4)',
+              'rgba(10, 141, 196, 0.5)',
+              'rgba(255, 255, 0, 0.5)',
+              'rgba(255, 165, 0, 0.6)',
+              'rgba(255, 0, 0, 0.7)'
+            ],
+            dissipating: true,
+            radius: 35,
+            map: this.map,
+          });
+        }
+      },
+      error: (error)=>{
+        console.error("Error al cargar el mapa de calor: ", error);
+      }
+    })
   }
 
   private async registerRouteHistory(data: {
@@ -222,9 +265,10 @@ export class MapsComponent implements AfterViewInit, OnChanges {
       }
 
       // Obtener el token de sesión
-      const token = localStorage.getItem('access_token');
-      if (!token) {
-        console.error('No se encontró el token de sesión.');
+      const token = this.authService.getToken();
+      if (!token || !(await this.authService.isTokenValid(token))) {
+        console.error('Token inválido o expirado. Iniciando sesión nuevamente');
+        this.authService.logout();
         return;
       }
 
@@ -280,7 +324,7 @@ export class MapsComponent implements AfterViewInit, OnChanges {
 
   // Función para agregar un elemento a sessionStorage
   private addToSessionStorage(cacheKey: string, data: any, MAX_ITEMS: number) {
-    /* EN PROCESO DE IMPLEMENTACIÓN
+
     // Obtén la lista de claves almacenadas en sessionStorage
     let keys = JSON.parse(sessionStorage.getItem('cacheKeys') || '[]');
 
@@ -296,7 +340,7 @@ export class MapsComponent implements AfterViewInit, OnChanges {
     // Agrega la nueva clave a la lista y actualiza en sessionStorage
     keys.push(cacheKey);
     sessionStorage.setItem('cacheKeys', JSON.stringify(keys));
-    */
+
   }
 
 

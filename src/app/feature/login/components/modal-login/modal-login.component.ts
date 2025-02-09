@@ -27,8 +27,8 @@ export class ModalLoginComponent implements OnInit{
 
   constructor(private authService: AuthService) {
     effect(()=>{
-      this.updateAuthStatus();
-    })
+      this.isAuthenticated.set(this.authService.isAuthenticated()());
+    }, {allowSignalWrites: true})
   }
 
   ngOnInit(): void {
@@ -36,7 +36,7 @@ export class ModalLoginComponent implements OnInit{
   }
 
   private updateAuthStatus(): void {
-    this.isAuthenticated = this.authService.isAuthenticated(); // Verifica si el usuario está autenticado
+    this.isAuthenticated.set(this.authService.isAuthenticated()());
   }
 
   changeToggleModel(){
