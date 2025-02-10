@@ -13,3 +13,7 @@ export interface RouteCoordinatesNames{
   destination: string;
 }
 
+export interface Coordinate{
+  lat: number,
+  lng: number
+}
