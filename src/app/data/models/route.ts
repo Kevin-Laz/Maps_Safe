@@ -13,3 +13,17 @@ export interface RouteCoordinatesNames{
   destination: string;
 }
 
+export interface Coordinate{
+  lat: number,
+  lng: number
+}
+
+export interface RouteSafe{
+  waypoints: [number, number][],
+  total_risk: number,
+  security_level : number
+}
+export interface SafeRouteRequest{
+  origin: [number, number];
+  destination: [number, number]
+}
