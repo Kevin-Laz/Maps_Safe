@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable, Subject } from 'rxjs';
 import { AuthService } from '../../../../shared/services/auth/auth.service';
 import { HistoryService } from '../../../../shared/services/history/history.service';
 import { environment } from '../../../../../environments/environment';
 import { Coordinate, RouteComplete } from '../../../../data/models/route';
+import { SafeRouteService } from '../safe_route/safe-route.service';
 
 
 @Injectable({
@@ -15,11 +16,14 @@ export class RouteService {
   private map!: google.maps.Map;
   private originMarker!: google.maps.marker.AdvancedMarkerElement;
   private destinationMarker!: google.maps.marker.AdvancedMarkerElement;
+  private polyline: google.maps.Polyline | null = null;
+
+
 
   //Evento para emitir información de la ruta generada
   private routeGenerated$ = new BehaviorSubject<RouteComplete | null>(null);
 
-  constructor(private historyService: HistoryService, private authService: AuthService) { }
+  constructor(private historyService: HistoryService, private authService: AuthService, private safeRouteService: SafeRouteService) { }
 
   /**
    *Inicializa `DirectionsService`, `DirectionsRenderer` y asocia el mapa.
@@ -72,6 +76,19 @@ export class RouteService {
     }
   }
 
+  private roundCoord(coord: number, decimals: number): number {
+    return parseFloat(coord.toFixed(decimals));
+  }
+
+  private generateCacheKey(origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral): string {
+    const lat1 = this.roundCoord(origin.lat, 3);
+    const lng1 = this.roundCoord(origin.lng, 3);
+    const lat2 = this.roundCoord(destination.lat, 3);
+    const lng2 = this.roundCoord(destination.lng, 3);
+
+    return `S:${lat1},${lng1},D:${lat2},${lng2}`;
+  }
+
 
   /**
    *Obtiene una ruta entre dos puntos y la dibuja en el mapa.
@@ -88,8 +105,8 @@ export class RouteService {
     if (this.originMarker) this.originMarker.map = null;
     if (this.destinationMarker) this.destinationMarker.map = null;
 
-    //Generar clave de caché
-    const cacheKey = `S:${origin.lat},${origin.lng},D:${destination.lat},${destination.lng}`;
+    // **Generar clave de caché con coordenadas redondeadas**
+    const cacheKey = this.generateCacheKey(origin, destination);
     const cachedData = sessionStorage.getItem(cacheKey);
 
     if (cachedData) {
@@ -101,43 +118,88 @@ export class RouteService {
       }
     }
     else{
+
       //Obtener ruta desde Google Maps API
-    this.directionsService.route(
-      {
-        origin,
-        destination,
-        travelMode: google.maps.TravelMode.DRIVING
-      },
-      async (response, status) => {
-        if (status === google.maps.DirectionsStatus.OK && response?.routes?.[0]?.legs?.[0]) {
-          this.directionsRenderer.setDirections(response);
+      this.directionsService.route(
+        {
+          origin,
+          destination,
+          travelMode: google.maps.TravelMode.DRIVING,
 
-          //Registrar en el historial
-          await this.registerRouteHistory(response.routes[0]);
+        },
+        async (response, status) => {
+          if (status === google.maps.DirectionsStatus.OK && response?.routes?.[0]?.legs?.[0]) {
+            console.log(response.routes[0]);
+            this.directionsRenderer.setDirections(response);
 
-          //Guardar en caché
-          if (new Blob([JSON.stringify(response)]).size < 200000) {
-            this.addToSessionStorage(cacheKey,response,5)
+            //Registrar en el historial
+            await this.registerRouteHistory(response.routes[0]);
+
+            //Guardar en caché
+            if (new Blob([JSON.stringify(response)]).size < 200000) {
+              this.addToSessionStorage(cacheKey,response,5)
+            }
+
+            //Emitir evento con la información de la ruta
+            this.emitRouteGenerated(response.routes[0]);
+
+          } else {
+            console.error('Error en la solicitud de direcciones:', status);
           }
-
-          //Emitir evento con la información de la ruta
-          this.emitRouteGenerated(response.routes[0]);
-
-        } else {
-          console.error('Error en la solicitud de direcciones:', status);
         }
-      }
-    );
+      );
     }
   }
 
   /**
+   *Genera el camino visual en el mapa
+   */
+  private async drawSafeRoute(origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral): Promise<void> {
+    try {
+      // Obtener la ruta segura desde la API
+      const previewRouteSafe = await firstValueFrom(
+        this.safeRouteService.getRouteSafe([origin.lat, origin.lng], [destination.lat, destination.lng])
+      );
+
+      // Convertir los waypoints en objetos google.maps.LatLng
+      const routePath: google.maps.LatLng[] = previewRouteSafe.waypoints.map(
+        (coord) => new google.maps.LatLng(coord[0], coord[1]) // Convertir array en LatLng
+      );
+
+      // Si ya existe una ruta previa en el mapa, eliminarla antes de agregar la nueva
+      if (this.polyline) {
+        this.polyline.setMap(null);
+      }
+
+      // Crear y dibujar la Polyline en el mapa
+      this.polyline = new google.maps.Polyline({
+        path: routePath,
+        geodesic: true,
+        strokeColor: '#0000FF', // Azul
+        strokeOpacity: 1.0,
+        strokeWeight: 4,
+      });
+
+      // Agregar la Polyline al mapa
+      this.polyline.setMap(this.map);
+
+      // Agregar marcadores de inicio y fin
+      this.setMarkers(origin, destination);
+
+      console.log("Ruta segura dibujada en el mapa sin Google Directions API");
+
+    } catch (error) {
+      console.error("Error al obtener la ruta segura:", error);
+    }
+  }
+
+
+  /**
    *Emite la información de la ruta generada a los componentes suscritos.
    */
-  private emitRouteGenerated(route: google.maps.DirectionsRoute): void {
+  private emitRouteGenerated(route: google.maps.DirectionsRoute, security_level?: number): void {
     const leg = route.legs[0];
     const duration = leg.duration?.text || 'N/A';
-    const tempsafe = Number((Math.random() * (1 - 0.79) + 0.79).toFixed(5));
 
     const start_location = leg.start_location as Coordinate | google.maps.LatLng;
     const end_location = leg.end_location as Coordinate | google.maps.LatLng;
@@ -155,7 +217,7 @@ export class RouteService {
       origin: leg.start_address || 'Unknown Origin',
       destination: leg.end_address || 'Unknown Destination',
       duration,
-      safe: tempsafe,
+      safe: security_level || -1,
       oLatLng: startLocation.toJSON(),
       dLatLng: endLocation.toJSON()
     });
