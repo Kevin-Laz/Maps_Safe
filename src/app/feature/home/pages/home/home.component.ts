@@ -52,7 +52,7 @@ export default class HomeComponent implements AfterViewInit{
       this.originAutocomplete.addListener('place_changed', () => {
         const place = this.originAutocomplete.getPlace();
         if (place.geometry && place.geometry.location) {
-          this.origin = place.formatted_address || '';
+          this.origin = place.name || place.formatted_address || '';
           this.originCoordinates = {
             lat: place.geometry.location.lat(),
             lng: place.geometry.location.lng(),
@@ -64,7 +64,7 @@ export default class HomeComponent implements AfterViewInit{
       this.destinationAutocomplete.addListener('place_changed', () => {
         const place = this.destinationAutocomplete.getPlace();
         if (place.geometry && place.geometry.location) {
-          this.destination = place.formatted_address || '';
+          this.destination = place.name || place.formatted_address || '';
           this.destinationCoordinates = {
             lat: place.geometry.location.lat(),
             lng: place.geometry.location.lng(),
@@ -77,7 +77,7 @@ export default class HomeComponent implements AfterViewInit{
       this.originAutocompleteM.addListener('place_changed', () => {
         const place = this.originAutocompleteM.getPlace();
         if (place.geometry && place.geometry.location) {
-          this.origin = place.formatted_address || '';
+          this.origin = place.name || place.formatted_address || '';
           this.originCoordinates = {
             lat: place.geometry.location.lat(),
             lng: place.geometry.location.lng(),
@@ -89,7 +89,7 @@ export default class HomeComponent implements AfterViewInit{
       this.destinationAutocompleteM.addListener('place_changed', () => {
         const place = this.destinationAutocompleteM.getPlace();
         if (place.geometry && place.geometry.location) {
-          this.destination = place.formatted_address || '';
+          this.destination = place.name || place.formatted_address || '';
           this.destinationCoordinates = {
             lat: place.geometry.location.lat(),
             lng: place.geometry.location.lng(),
@@ -124,6 +124,12 @@ export default class HomeComponent implements AfterViewInit{
   }
 
   onRouteGenerated(routeData: RouteComplete): void {
+    if(this.origin && this.origin !== routeData.origin){
+      routeData.origin = this.origin;
+    }
+    if(this.destination && this.destination != routeData.destination){
+      routeData.destination = this.destination;
+    }
     this.searchHistory.unshift(routeData);
     // Limitar el historial a las últimas 5 búsquedas
     if (this.searchHistory.length > 5) {
